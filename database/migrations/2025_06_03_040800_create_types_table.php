@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('project_types', function (Blueprint $table) {
+        Schema::create('types', function (Blueprint $table) {
             $table->ulid('id');
             $table->string('name');
             $table->softDeletes('deleted_at', precision: 0);
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('project_types');
+        Schema::dropIfExists('types');
     }
 };

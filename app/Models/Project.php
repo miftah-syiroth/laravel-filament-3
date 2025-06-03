@@ -2,9 +2,33 @@
 
 namespace App\Models;
 
+use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Project extends Model
+class Project extends Model implements HasMedia
 {
-    //
+    use HasUlids, SoftDeletes, InteractsWithMedia;
+
+    protected $fillable = [
+        'type_id',
+        'title',
+        'slug',
+        'excerpt',
+        'content',
+        'url',
+    ];
+
+    /**
+     * Get the type that owns the Project
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function type(): BelongsTo
+    {
+        return $this->belongsTo(Type::class, 'type_id');
+    }
 }
