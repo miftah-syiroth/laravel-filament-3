@@ -10,6 +10,7 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Filament\Resources\Resource;
+use Illuminate\Support\Collection;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\RichEditor;
 use App\Filament\Resources\ProjectResource\Pages;
@@ -82,7 +83,10 @@ class ProjectResource extends Resource
             ->columns([
                 Tables\Columns\SpatieMediaLibraryImageColumn::make('project-image')
                     ->label('Image')
-                    ->collection('project-images'),
+                    ->collection('project-images')
+                    ->filterMediaUsing(
+                        fn(Collection $media): Collection => $media->take(1),
+                    ),
                 Tables\Columns\TextColumn::make('title')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('type.name'),
