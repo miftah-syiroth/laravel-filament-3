@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\ProjectStatus;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Project;
@@ -14,13 +15,15 @@ use Illuminate\Support\Collection;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\RichEditor;
 use App\Filament\Resources\ProjectResource\Pages;
+use App\Models\Type;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ProjectResource extends Resource
 {
     protected static ?string $model = Project::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'mdi-application-brackets-outline';
 
     public static function form(Form $form): Form
     {
@@ -52,6 +55,8 @@ class ProjectResource extends Resource
                         Hidden::make('slug'),
                     ])
                     ->required(),
+                Forms\Components\Select::make('status')
+                    ->options(ProjectStatus::options())->required(),
                 Forms\Components\TextInput::make('url')
                     ->maxLength(255),
                 Forms\Components\Textarea::make('excerpt')
@@ -90,17 +95,35 @@ class ProjectResource extends Resource
                 Tables\Columns\TextColumn::make('title')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('type.name'),
-                Tables\Columns\TextColumn::make('url'),
+                Tables\Columns\TextColumn::make('start_date')
+                    ->label('Start Date')
+                    ->sortable()
+                    ->date(),
+                Tables\Columns\TextColumn::make('status')
+                    ->badge(),
+                Tables\Columns\TextColumn::make('url')
+                    ->url(fn($record) => $record->url)
+                    ->openUrlInNewTab(),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('type_id')
+                    ->options(Type::pluck('name', 'id')->toArray()),
+                Tables\Filters\SelectFilter::make('status')
+                    ->options(ProjectStatus::options()),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make('delete')
+                        ->action(function (Collection $records) {
+                            $records->each(function ($record) {
+                                $record->clearMediaCollection();
+                                $record->delete();
+                            });
+                        }),
                 ]),
             ]);
     }
@@ -118,6 +141,7 @@ class ProjectResource extends Resource
             'index' => Pages\ListProjects::route('/'),
             'create' => Pages\CreateProject::route('/create'),
             'edit' => Pages\EditProject::route('/{record}/edit'),
+            'view' => Pages\ViewProject::route('/{record}'),
         ];
     }
 }

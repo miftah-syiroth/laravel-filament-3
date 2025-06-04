@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ProjectStatus;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -20,6 +21,14 @@ class Project extends Model implements HasMedia
         'excerpt',
         'content',
         'url',
+        'start_date',
+        'end_date',
+        'status',
+    ];
+
+    protected $casts = [
+        'status' => ProjectStatus::class,
+        'start_date' => ProjectStatus::class,
     ];
 
     /**
