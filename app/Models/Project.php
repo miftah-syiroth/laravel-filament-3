@@ -40,4 +40,6 @@ class Project extends Model implements HasMedia
     {
         return $this->belongsTo(Type::class, 'type_id');
     }
+
+    // tags, comments
 }

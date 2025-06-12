@@ -17,13 +17,16 @@ use Filament\Forms\Components\RichEditor;
 use App\Filament\Resources\ProjectResource\Pages;
 use App\Models\Type;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Infolists;
+use Filament\Infolists\Infolist;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ProjectResource extends Resource
 {
     protected static ?string $model = Project::class;
-
+    protected static ?string $recordTitleAttribute = 'title';
     protected static ?string $navigationIcon = 'mdi-application-brackets-outline';
+    protected static ?int $navigationSort = 0;
 
     public static function form(Form $form): Form
     {
@@ -125,6 +128,36 @@ class ProjectResource extends Resource
                             });
                         }),
                 ]),
+            ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Infolists\Components\Section::make()
+                    ->schema([
+                        Infolists\Components\TextEntry::make('title'),
+                        Infolists\Components\TextEntry::make('slug'),
+                        Infolists\Components\TextEntry::make('type.name')
+                            ->label('Type'),
+                        Infolists\Components\TextEntry::make('start_date')
+                            ->label('Start Date')
+                            ->date(),
+                        Infolists\Components\TextEntry::make('end_date')
+                            ->label('End Date')
+                            ->date(),
+                        Infolists\Components\TextEntry::make('status')
+                            ->badge(),
+                        Infolists\Components\TextEntry::make('url')
+                            ->url(fn($record) => $record->url)
+                            ->openUrlInNewTab(),
+                        Infolists\Components\TextEntry::make('excerpt'),
+                    ]),
+                Infolists\Components\Section::make('Content')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('content')->prose()->markdown()->html()->hiddenLabel(),
+                    ]),
             ]);
     }
 
