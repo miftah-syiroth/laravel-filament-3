@@ -17,16 +17,19 @@ use Filament\Forms\Components\RichEditor;
 use App\Filament\Resources\ProjectResource\Pages;
 use App\Models\Type;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Forms\Components\SpatieTagsInput;
 use Filament\Infolists;
+use Filament\Infolists\Components\Actions\Action;
+use Filament\Infolists\Components\SpatieMediaLibraryImageEntry;
+use Filament\Infolists\Components\SpatieTagsEntry;
 use Filament\Infolists\Infolist;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ProjectResource extends Resource
 {
     protected static ?string $model = Project::class;
     protected static ?string $recordTitleAttribute = 'title';
     protected static ?string $navigationIcon = 'mdi-application-brackets-outline';
-    protected static ?int $navigationSort = 0;
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
@@ -60,8 +63,13 @@ class ProjectResource extends Resource
                     ->required(),
                 Forms\Components\Select::make('status')
                     ->options(ProjectStatus::options())->required(),
+                Forms\Components\DatePicker::make('start_date')
+                    ->label('Start Date'),
+                Forms\Components\DatePicker::make('end_date')
+                    ->label('End Date'),
                 Forms\Components\TextInput::make('url')
                     ->maxLength(255),
+                SpatieTagsInput::make('tags'),
                 Forms\Components\Textarea::make('excerpt')
                     ->required()
                     ->maxLength(255)
@@ -102,6 +110,10 @@ class ProjectResource extends Resource
                     ->label('Start Date')
                     ->sortable()
                     ->date(),
+                Tables\Columns\TextColumn::make('end_date')
+                    ->label('End Date')
+                    ->sortable()
+                    ->date(),
                 Tables\Columns\TextColumn::make('status')
                     ->badge(),
                 Tables\Columns\TextColumn::make('url')
@@ -110,6 +122,7 @@ class ProjectResource extends Resource
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('type_id')
+                    ->label('Tipe')
                     ->options(Type::pluck('name', 'id')->toArray()),
                 Tables\Filters\SelectFilter::make('status')
                     ->options(ProjectStatus::options()),
@@ -135,28 +148,78 @@ class ProjectResource extends Resource
     {
         return $infolist
             ->schema([
-                Infolists\Components\Section::make()
+                Infolists\Components\Section::make('Project Details')
+                    ->description('Informasi detail tentang project')
+                    ->icon('heroicon-o-document-text')
+                    ->headerActions([
+                        Action::make('edit')
+                            ->icon('heroicon-o-pencil-square')
+                            ->color('primary')
+                            ->url(fn ($record) => static::getUrl('edit', ['record' => $record])),
+                    ])
                     ->schema([
-                        Infolists\Components\TextEntry::make('title'),
-                        Infolists\Components\TextEntry::make('slug'),
-                        Infolists\Components\TextEntry::make('type.name')
-                            ->label('Type'),
-                        Infolists\Components\TextEntry::make('start_date')
-                            ->label('Start Date')
-                            ->date(),
-                        Infolists\Components\TextEntry::make('end_date')
-                            ->label('End Date')
-                            ->date(),
-                        Infolists\Components\TextEntry::make('status')
-                            ->badge(),
-                        Infolists\Components\TextEntry::make('url')
-                            ->url(fn($record) => $record->url)
-                            ->openUrlInNewTab(),
-                        Infolists\Components\TextEntry::make('excerpt'),
+                        Infolists\Components\Grid::make(3)
+                            ->schema([
+                                Infolists\Components\Group::make([
+                                    Infolists\Components\TextEntry::make('title')
+                                        ->label('Judul Project')
+                                        ->size(Infolists\Components\TextEntry\TextEntrySize::Large)
+                                        ->weight('bold'),
+                                    Infolists\Components\TextEntry::make('type.name')
+                                        ->label('Tipe Project')
+                                        ->badge()
+                                        ->color('primary'),
+                                    Infolists\Components\TextEntry::make('slug')
+                                        ->label('URL Slug')
+                                        ->color('gray'),
+                                    Infolists\Components\TextEntry::make('url')
+                                        ->label('Link Project')
+                                        ->url(fn($record) => $record->url)
+                                        ->openUrlInNewTab()
+                                        ->icon('heroicon-o-link')
+                                        ->placeholder('-'),
+                                ]),
+                                Infolists\Components\Group::make([
+                                    Infolists\Components\TextEntry::make('start_date')
+                                        ->label('Tanggal Mulai')
+                                        ->badge()
+                                        ->date()
+                                        ->color('success')
+                                        ->icon('heroicon-o-calendar')
+                                        ->placeholder('-'),
+                                    Infolists\Components\TextEntry::make('end_date')
+                                        ->label('Tanggal Selesai')
+                                        ->badge()
+                                        ->date()
+                                        ->color('success')
+                                        ->icon('heroicon-o-calendar')
+                                        ->placeholder('-'),
+                                    Infolists\Components\TextEntry::make('status')
+                                        ->badge()
+                                        ->icon(fn (ProjectStatus $state): ?string => $state->getIcon()),
+                                ]),
+                                Infolists\Components\Group::make([
+                                    Infolists\Components\TextEntry::make('excerpt')
+                                        ->label('Deskripsi Singkat')
+                                        ->markdown()
+                                        ->prose()
+                                        ->placeholder('-'),
+                                    SpatieTagsEntry::make('tags')
+                                        ->label('Tags')
+                                        ->color('primary'),
+                                ]),
+                            ]),
                     ]),
                 Infolists\Components\Section::make('Content')
                     ->schema([
                         Infolists\Components\TextEntry::make('content')->prose()->markdown()->html()->hiddenLabel(),
+                    ]),
+                Infolists\Components\Section::make('Screenshots')
+                    ->schema([
+                        SpatieMediaLibraryImageEntry::make('project-image')
+                            ->collection('project-images')
+                            ->grow(false)
+                            ->hiddenLabel(),
                     ]),
             ]);
     }

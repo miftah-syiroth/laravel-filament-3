@@ -38,7 +38,7 @@ class PanelProvider extends BasePanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
+                // Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
@@ -53,7 +53,7 @@ class PanelProvider extends BasePanelProvider
                 DispatchServingFilamentEvent::class,
             ])
             ->authMiddleware([
-                Authenticate::class,
+                // Authenticate::class,
             ]);
     }
 }
