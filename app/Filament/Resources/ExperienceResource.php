@@ -26,43 +26,46 @@ class ExperienceResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'company';
     protected static ?string $navigationIcon = 'mdi-briefcase-outline';
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('company')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('address')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('role')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('job_type')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\DatePicker::make('start_date')->required(),
-                Forms\Components\DatePicker::make('end_date'),
-                Forms\Components\TextInput::make('url')
-                    ->maxLength(255),
-                SpatieTagsInput::make('tags'),
-                SpatieMediaLibraryFileUpload::make('logo')
-                    ->collection('experience-logos')
-                    ->image()
-                    ->label('Logo')
-                    ->grow(false),
-                Forms\Components\Textarea::make('excerpt')
-                    ->required()
-                    ->columnSpanFull(),
-                Forms\Components\RichEditor::make('content')
-                    ->disableToolbarButtons([
-                        'attachFiles',
-                    ])
-                    ->required()
-                    ->columnSpan('full'),
+                Forms\Components\Section::make()
+                    ->schema([
+                        Forms\Components\TextInput::make('company')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('address')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('role')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('job_type')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\DatePicker::make('start_date')->required(),
+                        Forms\Components\DatePicker::make('end_date'),
+                        Forms\Components\TextInput::make('url')
+                            ->maxLength(255),
+                        SpatieTagsInput::make('tags'),
+                        SpatieMediaLibraryFileUpload::make('logo')
+                            ->collection('experience-logos')
+                            ->image()
+                            ->label('Logo')
+                            ->grow(false),
+                        Forms\Components\Textarea::make('excerpt')
+                            ->required()
+                            ->columnSpanFull(),
+                        Forms\Components\RichEditor::make('content')
+                            ->disableToolbarButtons([
+                                'attachFiles',
+                            ])
+                            ->required()
+                            ->columnSpan('full'),
+                    ])->columns(2),
                 Forms\Components\Section::make('Images')
                     ->schema([
                         SpatieMediaLibraryFileUpload::make('media')
@@ -123,7 +126,7 @@ class ExperienceResource extends Resource
                         Action::make('edit')
                             ->icon('heroicon-o-pencil-square')
                             ->color('primary')
-                            ->url(fn ($record) => static::getUrl('edit', ['record' => $record])),
+                            ->url(fn($record) => static::getUrl('edit', ['record' => $record])),
                     ])
                     ->icon('heroicon-o-document-text')
                     ->schema([
@@ -190,6 +193,11 @@ class ExperienceResource extends Resource
         return [
             //
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 
     public static function getPages(): array

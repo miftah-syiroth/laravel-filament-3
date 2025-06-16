@@ -18,6 +18,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\Navigation\NavigationGroup;
 
 class PanelProvider extends BasePanelProvider
 {
@@ -40,6 +41,11 @@ class PanelProvider extends BasePanelProvider
             ->widgets([
                 // Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
+            ])
+            ->navigationGroups([
+                NavigationGroup::make()
+                    ->label('Settings')
+                    ->collapsible(false),
             ])
             ->middleware([
                 EncryptCookies::class,

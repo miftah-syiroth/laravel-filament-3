@@ -11,14 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('projects', function (Blueprint $table) {
+        Schema::create('articles', function (Blueprint $table) {
             $table->ulid('id')->primary();
-            $table->foreignUlid('type_id')->constrained('types')->onDelete('cascade');
+            $table->foreignUlid('category_id')->constrained('categories')->onDelete('cascade');
             $table->string('title');
             $table->string('slug');
             $table->text('excerpt');
             $table->longText('content');
-            $table->string('url')->nullable();
+            $table->boolean('is_published')->default(false);
+            $table->timestamp('published_at')->nullable();
             $table->softDeletes('deleted_at', precision: 0);
             $table->timestamps();
         });
@@ -29,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('projects');
+        Schema::dropIfExists('articles');
     }
 };

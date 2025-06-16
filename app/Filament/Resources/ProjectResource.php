@@ -29,57 +29,60 @@ class ProjectResource extends Resource
     protected static ?string $model = Project::class;
     protected static ?string $recordTitleAttribute = 'title';
     protected static ?string $navigationIcon = 'mdi-application-brackets-outline';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('title')
-                    ->placeholder("Project's name or project's title")
-                    ->live(onBlur: true)
-                    ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', Str::slug($state)))
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('slug')
-                    ->disabled()
-                    ->dehydrated()
-                    ->required()
-                    ->maxLength(255)
-                    ->unique(Project::class, 'slug', ignoreRecord: true),
-                Forms\Components\Select::make('type_id')
-                    ->relationship('type', 'name')
-                    ->searchable()
-                    ->preload()
-                    ->createOptionForm([
-                        Forms\Components\TextInput::make('name')
+                Forms\Components\Section::make()
+                    ->schema([
+                        Forms\Components\TextInput::make('title')
+                            ->placeholder("Project's name or project's title")
                             ->live(onBlur: true)
                             ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', Str::slug($state)))
                             ->required()
-                            ->unique()
                             ->maxLength(255),
-                        Hidden::make('slug'),
-                    ])
-                    ->required(),
-                Forms\Components\Select::make('status')
-                    ->options(ProjectStatus::options())->required(),
-                Forms\Components\DatePicker::make('start_date')
-                    ->label('Start Date'),
-                Forms\Components\DatePicker::make('end_date')
-                    ->label('End Date'),
-                Forms\Components\TextInput::make('url')
-                    ->maxLength(255),
-                SpatieTagsInput::make('tags'),
-                Forms\Components\Textarea::make('excerpt')
-                    ->required()
-                    ->maxLength(255)
-                    ->columnSpan('full'),
-                RichEditor::make('content')::make('content')
-                    ->disableToolbarButtons([
-                        'attachFiles',
-                    ])
-                    ->required()
-                    ->columnSpan('full'),
+                        Forms\Components\TextInput::make('slug')
+                            ->disabled()
+                            ->dehydrated()
+                            ->required()
+                            ->maxLength(255)
+                            ->unique(Project::class, 'slug', ignoreRecord: true),
+                        Forms\Components\Select::make('type_id')
+                            ->relationship('type', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->createOptionForm([
+                                Forms\Components\TextInput::make('name')
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', Str::slug($state)))
+                                    ->required()
+                                    ->unique()
+                                    ->maxLength(255),
+                                Hidden::make('slug'),
+                            ])
+                            ->required(),
+                        Forms\Components\Select::make('status')
+                            ->options(ProjectStatus::options())->required(),
+                        Forms\Components\DatePicker::make('start_date')
+                            ->label('Start Date'),
+                        Forms\Components\DatePicker::make('end_date')
+                            ->label('End Date'),
+                        Forms\Components\TextInput::make('url')
+                            ->maxLength(255),
+                        SpatieTagsInput::make('tags'),
+                        Forms\Components\Textarea::make('excerpt')
+                            ->required()
+                            ->maxLength(255)
+                            ->columnSpan('full'),
+                        RichEditor::make('content')::make('content')
+                            ->disableToolbarButtons([
+                                'attachFiles',
+                            ])
+                            ->required()
+                            ->columnSpan('full'),
+                    ])->columns(2),
                 Forms\Components\Section::make('Images')
                     ->schema([
                         SpatieMediaLibraryFileUpload::make('media')
@@ -155,7 +158,7 @@ class ProjectResource extends Resource
                         Action::make('edit')
                             ->icon('heroicon-o-pencil-square')
                             ->color('primary')
-                            ->url(fn ($record) => static::getUrl('edit', ['record' => $record])),
+                            ->url(fn($record) => static::getUrl('edit', ['record' => $record])),
                     ])
                     ->schema([
                         Infolists\Components\Grid::make(3)
@@ -196,7 +199,7 @@ class ProjectResource extends Resource
                                         ->placeholder('-'),
                                     Infolists\Components\TextEntry::make('status')
                                         ->badge()
-                                        ->icon(fn (ProjectStatus $state): ?string => $state->getIcon()),
+                                        ->icon(fn(ProjectStatus $state): ?string => $state->getIcon()),
                                 ]),
                                 Infolists\Components\Group::make([
                                     Infolists\Components\TextEntry::make('excerpt')
@@ -229,6 +232,11 @@ class ProjectResource extends Resource
         return [
             //
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 
     public static function getPages(): array

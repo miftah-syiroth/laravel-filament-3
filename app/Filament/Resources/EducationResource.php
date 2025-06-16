@@ -27,38 +27,41 @@ class EducationResource extends Resource
     protected static ?string $model = Education::class;
     protected static ?string $recordTitleAttribute = 'institution';
     protected static ?string $navigationIcon = 'mdi-school-outline';
-    protected static ?int $navigationSort = 0;
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('institution')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('major')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\DatePicker::make('start_date')
-                    ->required(),
-                Forms\Components\DatePicker::make('end_date')
-                    ->required(),
-                Forms\Components\TextInput::make('url')
-                    ->maxLength(255)
-                    ->default(null),
-                SpatieTagsInput::make('tags'),
-                SpatieMediaLibraryFileUpload::make('logo')
-                    ->collection('education-logos')
-                    ->image()
-                    ->label('Logo')
-                    ->grow(false),
-                RichEditor::make('content')
-                    ->disableToolbarButtons([
-                        'attachFiles',
-                    ])
-                    ->required()
-                    ->columnSpan('full'),
-                Forms\Components\Section::make('Images')
+                Forms\Components\Section::make()
+                    ->schema([
+                        Forms\Components\TextInput::make('institution')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('major')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\DatePicker::make('start_date')
+                            ->required(),
+                        Forms\Components\DatePicker::make('end_date')
+                            ->required(),
+                        Forms\Components\TextInput::make('url')
+                            ->maxLength(255)
+                            ->default(null),
+                        SpatieTagsInput::make('tags'),
+                        SpatieMediaLibraryFileUpload::make('logo')
+                            ->collection('education-logos')
+                            ->image()
+                            ->label('Logo')
+                            ->grow(false),
+                        RichEditor::make('content')
+                            ->disableToolbarButtons([
+                                'attachFiles',
+                            ])
+                            ->required()
+                            ->columnSpan('full'),
+                    ])->columns(2),
+                Forms\Components\Section::make('Media')
                     ->schema([
                         SpatieMediaLibraryFileUpload::make('media')
                             ->collection('education-images')
@@ -188,6 +191,11 @@ class EducationResource extends Resource
         return [
             //
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 
     public static function getPages(): array

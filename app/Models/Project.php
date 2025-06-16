@@ -9,7 +9,6 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Spatie\Tags\HasTags;
 
 class Project extends Model implements HasMedia
@@ -42,10 +41,5 @@ class Project extends Model implements HasMedia
   public function type(): BelongsTo
   {
     return $this->belongsTo(Type::class, 'type_id');
-  }
-
-  public function comments(): MorphMany
-  {
-    return $this->morphMany(Comment::class, 'commentable');
   }
 }
