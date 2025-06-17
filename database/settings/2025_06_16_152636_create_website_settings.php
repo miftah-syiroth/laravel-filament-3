@@ -15,8 +15,5 @@ return new class extends SettingsMigration
         $this->migrator->add('website.contact_email', 'My Contact Email');
         $this->migrator->add('website.contact_phone', 'My Contact Phone');
         $this->migrator->add('website.address', 'My Address');
-        $this->migrator->add('website.facebook_url', 'My Facebook URL');
-        $this->migrator->add('website.twitter_url', 'My Twitter URL');
-        $this->migrator->add('website.instagram_url', 'My Instagram URL');
     }
 };

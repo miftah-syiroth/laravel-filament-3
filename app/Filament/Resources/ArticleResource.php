@@ -19,6 +19,8 @@ use Illuminate\Support\Collection;
 
 class ArticleResource extends Resource
 {
+    protected static bool $shouldSkipAuthorization = true;
+    
     protected static ?string $model = Article::class;
     protected static ?string $recordTitleAttribute = 'title';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
@@ -150,13 +152,5 @@ class ArticleResource extends Resource
             'create' => Pages\CreateArticle::route('/create'),
             'edit' => Pages\EditArticle::route('/{record}/edit'),
         ];
-    }
-
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()
-            ->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ]);
     }
 }

@@ -35,21 +35,20 @@ class ManageWebsite extends SettingsPage
                             ->required()
                             ->maxLength(255),
                         Forms\Components\FileUpload::make('logo')
-                            ->preserveFilenames()
+                            ->directory(WebsiteSettings::PATH)
                             ->avatar()
                             ->image()
                             ->imageEditor()
-                            ->imageEditorAspectRatios([
-                                '1:1',
-                            ]),
+                            ->previewable(),
                         Forms\Components\FileUpload::make('favicon')
-                            ->preserveFilenames()
+                            ->directory(WebsiteSettings::PATH)
                             ->avatar()
                             ->image()
                             ->imageEditor()
                             ->imageEditorAspectRatios([
                                 '1:1',
-                            ]),
+                            ])
+                            ->previewable(),
                         Forms\Components\TextInput::make('contact_email')
                             ->email()
                             ->maxLength(255),
