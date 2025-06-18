@@ -3,20 +3,11 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\EducationResource\Pages;
-use App\Filament\Resources\EducationResource\RelationManagers;
 use App\Models\Education;
-use Filament\Forms;
-use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Components\SpatieTagsInput;
 use Filament\Infolists;
-use Filament\Infolists\Components\Actions\Action;
 use Filament\Infolists\Components\SpatieMediaLibraryImageEntry;
 use Filament\Infolists\Components\SpatieTagsEntry;
 use Filament\Infolists\Infolist;
@@ -29,55 +20,13 @@ class EducationResource extends Resource
     protected static ?string $navigationIcon = 'mdi-school-outline';
     protected static ?int $navigationSort = 1;
 
-    public static function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                Forms\Components\Section::make()
-                    ->schema([
-                        Forms\Components\TextInput::make('institution')
-                            ->required()
-                            ->maxLength(255),
-                        Forms\Components\TextInput::make('major')
-                            ->required()
-                            ->maxLength(255),
-                        Forms\Components\DatePicker::make('start_date')
-                            ->required(),
-                        Forms\Components\DatePicker::make('end_date')
-                            ->required(),
-                        Forms\Components\TextInput::make('url')
-                            ->maxLength(255)
-                            ->default(null),
-                        SpatieTagsInput::make('tags'),
-                        SpatieMediaLibraryFileUpload::make('logo')
-                            ->collection('education-logos')
-                            ->image()
-                            ->label('Logo')
-                            ->grow(false),
-                        RichEditor::make('content')
-                            ->disableToolbarButtons([
-                                'attachFiles',
-                            ])
-                            ->required()
-                            ->columnSpan('full'),
-                    ])->columns(2),
-                Forms\Components\Section::make('Media')
-                    ->schema([
-                        SpatieMediaLibraryFileUpload::make('media')
-                            ->collection('education-images')
-                            ->multiple()
-                            ->image()
-                            ->maxFiles(5)
-                            ->hiddenLabel(),
-                    ])
-                    ->collapsible(),
-            ]);
-    }
-
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('index')
+                    ->label('No.')
+                    ->rowIndex(),
                 Tables\Columns\SpatieMediaLibraryImageColumn::make('logo')
                     ->collection('education-logos'),
                 Tables\Columns\TextColumn::make('institution')
@@ -92,6 +41,7 @@ class EducationResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('end_date')
                     ->date()
+                    ->timezone('Asia/Jakarta')
                     ->sortable(),
             ])
             ->filters([
@@ -99,14 +49,6 @@ class EducationResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                    Tables\Actions\ForceDeleteBulkAction::make(),
-                    Tables\Actions\RestoreBulkAction::make(),
-                ]),
             ]);
     }
 
@@ -114,21 +56,13 @@ class EducationResource extends Resource
     {
         return $infolist
             ->schema([
-                Infolists\Components\Section::make('Education Details')
-                    ->description('Informasi detail tentang education')
-                    ->icon('heroicon-o-document-text')
-                    ->headerActions([
-                        Action::make('edit')
-                            ->icon('heroicon-o-pencil-square')
-                            ->color('primary')
-                            ->url(fn ($record) => static::getUrl('edit', ['record' => $record])),
-                    ])
+                Infolists\Components\Section::make()
                     ->schema([
                         Infolists\Components\Split::make([
                             Infolists\Components\ImageEntry::make('logo')
                                 ->grow(false)
                                 ->hiddenLabel()
-                                ->placeholder('-'),
+                                ->placeholder('logo'),
                             Infolists\Components\Grid::make(2)
                                 ->schema([
                                     Infolists\Components\Group::make([
@@ -176,7 +110,7 @@ class EducationResource extends Resource
                     ->schema([
                         Infolists\Components\TextEntry::make('content')->prose()->markdown()->html()->hiddenLabel(),
                     ]),
-                Infolists\Components\Section::make('Screenshots')
+                Infolists\Components\Section::make('Captures')
                     ->schema([
                         SpatieMediaLibraryImageEntry::make('media')
                             ->collection('education-images')
@@ -202,17 +136,8 @@ class EducationResource extends Resource
     {
         return [
             'index' => Pages\ListEducation::route('/'),
-            'create' => Pages\CreateEducation::route('/create'),
-            'edit' => Pages\EditEducation::route('/{record}/edit'),
             'view' => Pages\ViewEducation::route('/{record}'),
         ];
     }
 
-    // public static function getEloquentQuery(): Builder
-    // {
-    //     return parent::getEloquentQuery()
-    //         ->withoutGlobalScopes([
-    //             SoftDeletingScope::class,
-    //         ]);
-    // }
 }

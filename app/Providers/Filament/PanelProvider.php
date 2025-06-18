@@ -17,12 +17,8 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Filament\Navigation\NavigationGroup;
 use App\Http\Middleware\RedirectIfAuthenticated;
-use Illuminate\Support\Facades\Auth;
 use Filament\Navigation\NavigationItem;
-use Filament\Navigation\MenuItem;
-use App\Filament\Auth\Pages\ManageWebsite;
 
 class PanelProvider extends BasePanelProvider
 {
@@ -45,8 +41,7 @@ class PanelProvider extends BasePanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                // Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                // Widgets\FilamentInfoWidget::class,
             ])
             ->navigationItems([
                 NavigationItem::make('Login')

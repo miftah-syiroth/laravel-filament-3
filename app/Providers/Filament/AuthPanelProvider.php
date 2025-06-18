@@ -34,7 +34,7 @@ class AuthPanelProvider extends PanelProvider
             ])
             ->brandName('Syiroth App')
             ->brandLogo(app(WebsiteSettings::class)->getLogoPath())
-            ->sidebarFullyCollapsibleOnDesktop()
+            ->topNavigation()
             ->discoverResources(in: app_path('Filament/Auth/Resources'), for: 'App\\Filament\\Auth\\Resources')
             ->discoverPages(in: app_path('Filament/Auth/Pages'), for: 'App\\Filament\\Auth\\Pages')
             ->pages([

@@ -3,19 +3,11 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ExperienceResource\Pages;
-use App\Filament\Resources\ExperienceResource\RelationManagers;
 use App\Models\Experience;
-use Filament\Forms;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Components\SpatieTagsInput;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Infolists;
-use Filament\Infolists\Components\Actions\Action;
 use Filament\Infolists\Components\SpatieMediaLibraryImageEntry;
 use Filament\Infolists\Components\SpatieTagsEntry;
 use Filament\Infolists\Infolist;
@@ -28,61 +20,13 @@ class ExperienceResource extends Resource
     protected static ?string $navigationIcon = 'mdi-briefcase-outline';
     protected static ?int $navigationSort = 2;
 
-    public static function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                Forms\Components\Section::make()
-                    ->schema([
-                        Forms\Components\TextInput::make('company')
-                            ->required()
-                            ->maxLength(255),
-                        Forms\Components\TextInput::make('address')
-                            ->required()
-                            ->maxLength(255),
-                        Forms\Components\TextInput::make('role')
-                            ->required()
-                            ->maxLength(255),
-                        Forms\Components\TextInput::make('job_type')
-                            ->required()
-                            ->maxLength(255),
-                        Forms\Components\DatePicker::make('start_date')->required(),
-                        Forms\Components\DatePicker::make('end_date'),
-                        Forms\Components\TextInput::make('url')
-                            ->maxLength(255),
-                        SpatieTagsInput::make('tags'),
-                        SpatieMediaLibraryFileUpload::make('logo')
-                            ->collection('experience-logos')
-                            ->image()
-                            ->label('Logo')
-                            ->grow(false),
-                        Forms\Components\Textarea::make('excerpt')
-                            ->required()
-                            ->columnSpanFull(),
-                        Forms\Components\RichEditor::make('content')
-                            ->disableToolbarButtons([
-                                'attachFiles',
-                            ])
-                            ->required()
-                            ->columnSpan('full'),
-                    ])->columns(2),
-                Forms\Components\Section::make('Images')
-                    ->schema([
-                        SpatieMediaLibraryFileUpload::make('media')
-                            ->collection('experience-images')
-                            ->multiple()
-                            ->image()
-                            ->maxFiles(5)
-                            ->hiddenLabel(),
-                    ])
-                    ->collapsible(),
-            ]);
-    }
-
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('index')
+                    ->label('No.')
+                    ->rowIndex(),
                 Tables\Columns\SpatieMediaLibraryImageColumn::make('logo')
                     ->collection('experience-logos'),
                 Tables\Columns\TextColumn::make('company')
@@ -105,14 +49,6 @@ class ExperienceResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                    Tables\Actions\ForceDeleteBulkAction::make(),
-                    Tables\Actions\RestoreBulkAction::make(),
-                ]),
             ]);
     }
 
@@ -120,15 +56,7 @@ class ExperienceResource extends Resource
     {
         return $infolist
             ->schema([
-                Infolists\Components\Section::make('Experience Details')
-                    ->description('Informasi detail tentang experience')
-                    ->headerActions([
-                        Action::make('edit')
-                            ->icon('heroicon-o-pencil-square')
-                            ->color('primary')
-                            ->url(fn($record) => static::getUrl('edit', ['record' => $record])),
-                    ])
-                    ->icon('heroicon-o-document-text')
+                Infolists\Components\Section::make()
                     ->schema([
                         Infolists\Components\Split::make([
                             Infolists\Components\ImageEntry::make('logo')
@@ -178,7 +106,7 @@ class ExperienceResource extends Resource
                     ->schema([
                         Infolists\Components\TextEntry::make('content')->prose()->markdown()->html()->hiddenLabel(),
                     ]),
-                Infolists\Components\Section::make('Screenshots')
+                Infolists\Components\Section::make('Captures')
                     ->schema([
                         SpatieMediaLibraryImageEntry::make('media')
                             ->collection('experience-images')
@@ -204,17 +132,7 @@ class ExperienceResource extends Resource
     {
         return [
             'index' => Pages\ListExperiences::route('/'),
-            'create' => Pages\CreateExperience::route('/create'),
-            'edit' => Pages\EditExperience::route('/{record}/edit'),
             'view' => Pages\ViewExperience::route('/{record}'),
         ];
     }
-
-    // public static function getEloquentQuery(): Builder
-    // {
-    //     return parent::getEloquentQuery()
-    //         ->withoutGlobalScopes([
-    //             SoftDeletingScope::class,
-    //         ]);
-    // }
 }

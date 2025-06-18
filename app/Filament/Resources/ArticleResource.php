@@ -29,8 +29,7 @@ class ArticleResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('index')
                     ->label('No.')
-                    ->rowIndex()
-                    ->sortable(),
+                    ->rowIndex(),
                 Tables\Columns\SpatieMediaLibraryImageColumn::make('article-image')
                     ->label('Image')
                     ->collection('article-images')
