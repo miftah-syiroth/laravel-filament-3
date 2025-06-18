@@ -2,11 +2,23 @@
 
 namespace App\Filament\Auth\Pages;
 
-use Filament\Pages\Page;
+use Filament\Pages\Auth\Login as BaseAuthLogin;
+use Filament\Actions\Action;
 
-class Login extends Page
+class Login extends BaseAuthLogin
 {
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    // Anda bisa menambahkan kustomisasi di sini jika diperlukan
 
-    protected static string $view = 'filament.auth.pages.login';
+    protected function getFormActions(): array
+    {
+        return [
+            Action::make('home')
+                ->label('Back to Home')
+                ->url('/')
+                ->icon('heroicon-o-home')
+                ->color('gray')
+                ->extraAttributes(['class' => 'w-full']),
+            ...parent::getFormActions(),
+        ];
+    }
 }

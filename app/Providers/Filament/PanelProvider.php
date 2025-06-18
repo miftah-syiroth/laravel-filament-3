@@ -52,7 +52,7 @@ class PanelProvider extends BasePanelProvider
                 NavigationItem::make('Login')
                     ->url('/auth/login')
                     ->icon('heroicon-o-arrow-right-on-rectangle')
-                    ->sort(3),
+                    ->sort(4),
             ])
             ->middleware([
                 EncryptCookies::class,

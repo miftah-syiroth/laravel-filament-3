@@ -11,15 +11,18 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Infolists;
+use Filament\Infolists\Components\SpatieMediaLibraryImageEntry;
+use Filament\Infolists\Components\SpatieTagsEntry;
+use Filament\Infolists\Infolist;
+use Filament\Support\Enums\FontFamily;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 
 class ArticleResource extends Resource
 {
     protected static bool $shouldSkipAuthorization = true;
-    
+
     protected static ?string $model = Article::class;
     protected static ?string $recordTitleAttribute = 'title';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
@@ -132,6 +135,59 @@ class ArticleResource extends Resource
             ]);
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Infolists\Components\Section::make()
+                    ->schema([
+                        Infolists\Components\Grid::make(2)
+                            ->schema([
+                                Infolists\Components\Group::make([
+                                    Infolists\Components\TextEntry::make('title')
+                                        ->size(Infolists\Components\TextEntry\TextEntrySize::Large)
+                                        ->weight('bold'),
+                                    Infolists\Components\TextEntry::make('published_at')
+                                        ->label('Tanggal Publikasi')
+                                        ->badge()
+                                        ->date()
+                                        ->color('success')
+                                        ->icon('heroicon-o-calendar')
+                                        ->placeholder('-'),
+                                ]),
+                                Infolists\Components\Group::make([
+                                    Infolists\Components\TextEntry::make('category.name')
+                                        ->label('Category')
+                                        ->badge()
+                                        ->color('primary'),
+                                    SpatieTagsEntry::make('tags')
+                                        ->label('Tags')
+                                        ->color('primary'),
+                                ]),
+                            ]),
+                    ]),
+                Infolists\Components\Section::make()
+                    ->schema([
+                        Infolists\Components\TextEntry::make('excerpt')
+                            ->hiddenLabel()
+                            ->fontFamily(FontFamily::Mono)
+                            ->color('gray')
+                            ->prose(),
+                        Infolists\Components\TextEntry::make('content')
+                            ->hiddenLabel()
+                            ->html()
+                            ->prose(),
+                    ]),
+                Infolists\Components\Section::make('Screenshots')
+                    ->schema([
+                        SpatieMediaLibraryImageEntry::make('article-image')
+                            ->collection('article-images')
+                            ->grow(false)
+                            ->hiddenLabel(),
+                    ]),
+            ]);
+    }
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
@@ -150,6 +206,7 @@ class ArticleResource extends Resource
             'index' => Pages\ListArticles::route('/'),
             'create' => Pages\CreateArticle::route('/create'),
             'edit' => Pages\EditArticle::route('/{record}/edit'),
+            'view' => Pages\ViewArticle::route('/{record}'),
         ];
     }
 }

@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
-
+    protected static bool $shouldSkipAuthorization = true;
     protected static ?string $recordTitleAttribute = 'name';
     protected static ?string $navigationIcon = 'heroicon-o-user';
 
@@ -56,10 +56,9 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('roles')
+                Tables\Columns\TextColumn::make('roles.name')
                     ->badge()
-                    ->searchable()
-                    ->formatStateUsing(fn ($state) => implode(', ', $state->pluck('name')->toArray())),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('email_verified_at')
                     ->dateTime('d M Y H:i')
                     ->sortable(),

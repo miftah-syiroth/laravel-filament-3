@@ -19,6 +19,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Settings\WebsiteSettings;
 use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
+use App\Filament\Auth\Pages\Login;
 
 class AuthPanelProvider extends PanelProvider
 {
@@ -45,7 +46,7 @@ class AuthPanelProvider extends PanelProvider
                 Widgets\FilamentInfoWidget::class,
             ])
             ->plugin(FilamentSpatieRolesPermissionsPlugin::make())
-            ->login()
+            ->login(Login::class)
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

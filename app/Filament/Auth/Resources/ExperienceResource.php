@@ -23,7 +23,7 @@ use Filament\Infolists\Infolist;
 class ExperienceResource extends Resource
 {
     protected static ?string $model = Experience::class;
-
+    protected static bool $shouldSkipAuthorization = true;
     protected static ?string $recordTitleAttribute = 'company';
     protected static ?string $navigationIcon = 'mdi-briefcase-outline';
     protected static ?int $navigationSort = 2;

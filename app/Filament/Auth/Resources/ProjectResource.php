@@ -27,6 +27,7 @@ use Filament\Infolists\Infolist;
 class ProjectResource extends Resource
 {
     protected static ?string $model = Project::class;
+    protected static bool $shouldSkipAuthorization = true;
     protected static ?string $recordTitleAttribute = 'title';
     protected static ?string $navigationIcon = 'mdi-application-brackets-outline';
     protected static ?int $navigationSort = 3;

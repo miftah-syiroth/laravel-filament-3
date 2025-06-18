@@ -25,6 +25,7 @@ use Filament\Infolists\Infolist;
 class EducationResource extends Resource
 {
     protected static ?string $model = Education::class;
+    protected static bool $shouldSkipAuthorization = true;
     protected static ?string $recordTitleAttribute = 'institution';
     protected static ?string $navigationIcon = 'mdi-school-outline';
     protected static ?int $navigationSort = 1;
@@ -207,12 +208,4 @@ class EducationResource extends Resource
             'view' => Pages\ViewEducation::route('/{record}'),
         ];
     }
-
-    // public static function getEloquentQuery(): Builder
-    // {
-    //     return parent::getEloquentQuery()
-    //         ->withoutGlobalScopes([
-    //             SoftDeletingScope::class,
-    //         ]);
-    // }
 }
