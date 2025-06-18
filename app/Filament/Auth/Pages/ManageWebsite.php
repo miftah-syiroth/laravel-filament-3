@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Pages;
+namespace App\Filament\Auth\Pages;
 
 use App\Settings\WebsiteSettings;
 use Filament\Forms;

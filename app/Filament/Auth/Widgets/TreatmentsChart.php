@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Widgets;
+namespace App\Filament\Auth\Widgets;
 
 use Filament\Widgets\ChartWidget;
 use App\Models\Treatment;

@@ -2,10 +2,7 @@
 
 namespace App\Providers\Filament;
 
-use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
 use App\Settings\WebsiteSettings;
-use App\Models\Project;
-use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -21,6 +18,11 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Filament\Navigation\NavigationGroup;
+use App\Http\Middleware\RedirectIfAuthenticated;
+use Illuminate\Support\Facades\Auth;
+use Filament\Navigation\NavigationItem;
+use Filament\Navigation\MenuItem;
+use App\Filament\Auth\Pages\ManageWebsite;
 
 class PanelProvider extends BasePanelProvider
 {
@@ -30,28 +32,27 @@ class PanelProvider extends BasePanelProvider
             ->default()
             ->id('/')
             ->path('/')
-            ->login()
-            ->sidebarWidth('sm')
             ->colors([
                 'primary' => Color::Amber,
             ])
             ->brandName('Syiroth App')
             ->brandLogo(app(WebsiteSettings::class)->getLogoPath())
+            ->topNavigation()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
-            ->plugin(FilamentSpatieRolesPermissionsPlugin::make())
             ->widgets([
                 // Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
             ])
-            ->navigationGroups([
-                NavigationGroup::make()
-                    ->label('Settings')
-                    ->collapsible(false),
+            ->navigationItems([
+                NavigationItem::make('Login')
+                    ->url('/auth/login')
+                    ->icon('heroicon-o-arrow-right-on-rectangle')
+                    ->sort(3),
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -65,7 +66,7 @@ class PanelProvider extends BasePanelProvider
                 DispatchServingFilamentEvent::class,
             ])
             ->authMiddleware([
-                // Authenticate::class,
+                RedirectIfAuthenticated::class,
             ]);
     }
 }
