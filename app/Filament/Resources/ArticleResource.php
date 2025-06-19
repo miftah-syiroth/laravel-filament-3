@@ -27,23 +27,28 @@ class ArticleResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('index')
-                    ->label('No.')
-                    ->rowIndex(),
-                Tables\Columns\SpatieMediaLibraryImageColumn::make('article-image')
-                    ->label('Image')
-                    ->collection('article-images')
-                    ->filterMediaUsing(
-                        fn(Collection $media): Collection => $media->take(1),
-                    ),
-                Tables\Columns\TextColumn::make('category.name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('title')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('published_at')
-                    ->dateTime('d M Y H:i')
-                    ->timezone('Asia/Jakarta')
-                    ->sortable(),
+                Tables\Columns\Layout\Stack::make([
+                    Tables\Columns\SpatieMediaLibraryImageColumn::make('article-image')
+                        ->label('Image')
+                        ->collection('article-images')
+                        ->filterMediaUsing(
+                            fn(Collection $media): Collection => $media->take(1),
+                        )->height(100)->grow(false),
+                    Tables\Columns\TextColumn::make('title')
+                        ->searchable(),
+                    Tables\Columns\TextColumn::make('excerpt')
+                        ->searchable(),
+                    Tables\Columns\TextColumn::make('category.name')
+                        ->searchable(),
+                    Tables\Columns\TextColumn::make('published_at')
+                        ->dateTime('d M Y H:i')
+                        ->sortable(),
+                ]),
+            ])
+            ->contentGrid([
+                'md' => 2,
+                'lg' => 3,
+                'xl' => 4,
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('category_id')
@@ -51,7 +56,6 @@ class ArticleResource extends Resource
                     ->options(Category::pluck('name', 'id')->toArray()),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
             ]);
     }
 

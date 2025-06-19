@@ -41,7 +41,6 @@ class EducationResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('end_date')
                     ->date()
-                    ->timezone('Asia/Jakarta')
                     ->sortable(),
             ])
             ->filters([
