@@ -2,7 +2,6 @@
 
 namespace App\Providers\Filament;
 
-use App\Settings\WebsiteSettings;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -32,7 +31,7 @@ class PanelProvider extends BasePanelProvider
                 'primary' => Color::Amber,
             ])
             ->brandName('Syiroth App')
-            ->brandLogo(app(WebsiteSettings::class)->getLogoPath())
+            // ->brandLogo(app(WebsiteSettings::class)->getLogoPath())
             ->topNavigation()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')

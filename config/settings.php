@@ -1,6 +1,5 @@
 <?php
 
-use App\Settings\WebsiteSettings;
 
 return [
 
@@ -9,7 +8,7 @@ return [
      * put them (manually) here.
      */
     'settings' => [
-        WebsiteSettings::class,
+        // WebsiteSettings::class,
     ],
 
     /*

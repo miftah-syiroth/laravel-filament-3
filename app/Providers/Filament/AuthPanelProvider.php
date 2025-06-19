@@ -17,7 +17,6 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use App\Settings\WebsiteSettings;
 use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
 use App\Filament\Auth\Pages\Login;
 
@@ -33,7 +32,7 @@ class AuthPanelProvider extends PanelProvider
                 'primary' => Color::Amber,
             ])
             ->brandName('Syiroth App')
-            ->brandLogo(app(WebsiteSettings::class)->getLogoPath())
+            // ->brandLogo(app(WebsiteSettings::class)->getLogoPath())
             ->topNavigation()
             ->discoverResources(in: app_path('Filament/Auth/Resources'), for: 'App\\Filament\\Auth\\Resources')
             ->discoverPages(in: app_path('Filament/Auth/Pages'), for: 'App\\Filament\\Auth\\Pages')
