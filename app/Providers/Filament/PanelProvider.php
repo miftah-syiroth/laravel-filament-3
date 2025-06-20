@@ -39,7 +39,10 @@ class PanelProvider extends BasePanelProvider
             ->pages([
                 Pages\Dashboard::class,
             ])
-            ->plugin(SimpleLightBoxPlugin::make())
+            ->plugins([
+                SimpleLightBoxPlugin::make(),
+                \BezhanSalleh\FilamentGoogleAnalytics\FilamentGoogleAnalyticsPlugin::make()
+            ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 // Widgets\FilamentInfoWidget::class,
