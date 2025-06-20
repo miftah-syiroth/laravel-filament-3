@@ -32,11 +32,11 @@ enum ProjectStatus: string implements HasColor, HasIcon, HasLabel
     public function getColor(): string | array | null
     {
         return match ($this) {
-            self::DRAFT => 'secondary',          // abu-abu, netral
-            self::IN_PROGRESS => 'warning',      // kuning, sedang berjalan
-            self::PUBLISHED => 'success',        // hijau, berhasil & tayang
-            self::ARCHIVED => 'dark',            // abu tua, arsip
-            self::CANCELLED => 'danger',         // merah, batal
+            self::DRAFT => 'gray',
+            self::IN_PROGRESS => 'warning',
+            self::PUBLISHED => 'success',
+            self::ARCHIVED => 'info',
+            self::CANCELLED => 'danger',
         };
     }
 

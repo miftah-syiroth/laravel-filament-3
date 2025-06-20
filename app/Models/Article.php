@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -12,7 +13,7 @@ use Spatie\Tags\HasTags;
 
 class Article extends Model implements HasMedia
 {
-    use HasUlids, SoftDeletes, InteractsWithMedia, HasTags;
+    use HasUlids, SoftDeletes, InteractsWithMedia, HasTags, HasFactory;
 
     protected $fillable = [
         'category_id',

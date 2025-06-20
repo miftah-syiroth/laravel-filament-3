@@ -10,10 +10,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Tags\HasTags;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Project extends Model implements HasMedia
 {
-  use HasUlids, SoftDeletes, InteractsWithMedia, HasTags;
+  use HasUlids, SoftDeletes, InteractsWithMedia, HasTags, HasFactory;
 
   protected $fillable = [
     'type_id',

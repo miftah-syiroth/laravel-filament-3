@@ -11,6 +11,7 @@ use Filament\Infolists;
 use Filament\Infolists\Components\SpatieMediaLibraryImageEntry;
 use Filament\Infolists\Components\SpatieTagsEntry;
 use Filament\Infolists\Infolist;
+use Illuminate\Database\Eloquent\Builder;
 
 
 class EducationResource extends Resource
@@ -28,6 +29,7 @@ class EducationResource extends Resource
                     ->label('No.')
                     ->rowIndex(),
                 Tables\Columns\SpatieMediaLibraryImageColumn::make('logo')
+                    ->label('')
                     ->collection('education-logos'),
                 Tables\Columns\TextColumn::make('institution')
                     ->searchable(),
@@ -37,12 +39,15 @@ class EducationResource extends Resource
                     ->url(fn($record) => $record->url)
                     ->openUrlInNewTab(),
                 Tables\Columns\TextColumn::make('start_date')
-                    ->date()
+                    ->label('Tahun Masuk')
+                    ->date('d M Y')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('end_date')
-                    ->date()
+                    ->label('Tahun Lulus')
+                    ->date('d M Y')
                     ->sortable(),
             ])
+            ->defaultSort('end_date', 'desc')
             ->filters([
                 // Tables\Filters\TrashedFilter::make(),
             ])
@@ -126,10 +131,10 @@ class EducationResource extends Resource
         ];
     }
 
-    public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::count();
-    }
+    // public static function getNavigationBadge(): ?string
+    // {
+    //     return static::getModel()::count();
+    // }
 
     public static function getPages(): array
     {
@@ -138,5 +143,4 @@ class EducationResource extends Resource
             'view' => Pages\ViewEducation::route('/{record}'),
         ];
     }
-
 }

@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\Tags\HasTags;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Experience extends Model implements HasMedia
 {
-    use HasUlids, SoftDeletes, InteractsWithMedia, HasTags;
+    use HasUlids, SoftDeletes, InteractsWithMedia, HasTags, HasFactory;
 
     protected $fillable = [
         'company',

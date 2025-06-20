@@ -3,27 +3,21 @@
 namespace App\Filament\Resources;
 
 use App\Enums\ProjectStatus;
-use Filament\Forms;
 use Filament\Tables;
 use App\Models\Project;
-use Filament\Forms\Set;
-use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Illuminate\Support\Str;
 use Filament\Resources\Resource;
 use Illuminate\Support\Collection;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\RichEditor;
 use App\Filament\Resources\ProjectResource\Pages;
 use App\Models\Type;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Components\SpatieTagsInput;
 use Filament\Infolists;
-use Filament\Infolists\Components\Actions\Action;
 use Filament\Infolists\Components\SpatieMediaLibraryImageEntry;
 use Filament\Infolists\Components\SpatieTagsEntry;
 use Filament\Infolists\Infolist;
 use Filament\Support\Enums\FontFamily;
+use Filament\Support\Enums\FontWeight;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Support\Enums\Alignment;
 
 class ProjectResource extends Resource
 {
@@ -36,31 +30,55 @@ class ProjectResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('index')
-                    ->label('No.')
-                    ->rowIndex(),
-                Tables\Columns\SpatieMediaLibraryImageColumn::make('project-image')
-                    ->label('Image')
-                    ->collection('project-images')
-                    ->filterMediaUsing(
-                        fn(Collection $media): Collection => $media->take(1),
-                    ),
-                Tables\Columns\TextColumn::make('title')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('type.name'),
-                Tables\Columns\TextColumn::make('start_date')
-                    ->label('Start Date')
-                    ->sortable()
-                    ->date(),
-                Tables\Columns\TextColumn::make('end_date')
-                    ->label('End Date')
-                    ->sortable()
-                    ->date(),
-                Tables\Columns\TextColumn::make('status')
-                    ->badge(),
-                Tables\Columns\TextColumn::make('url')
-                    ->url(fn($record) => $record->url)
-                    ->openUrlInNewTab(),
+                Tables\Columns\Layout\Stack::make([
+                    Tables\Columns\SpatieMediaLibraryImageColumn::make('project-image')
+                        ->label('')
+                        ->collection('project-images')
+                        ->filterMediaUsing(
+                            fn(Collection $media): Collection => $media->take(1),
+                        )
+                        ->width('100%')
+                        ->height('100%'),
+                    Tables\Columns\Layout\Stack::make([
+                        Tables\Columns\TextColumn::make('title')
+                            ->searchable()
+                            ->weight(FontWeight::Bold),
+                        Tables\Columns\TextColumn::make('excerpt')
+                            ->color('gray')
+                            ->limit(50),
+                        Tables\Columns\TextColumn::make('start_date')
+                            ->label('Start Date')
+                            ->sortable()
+                            ->date('d/m/Y')
+                            ->color('gray')
+                            ->fontFamily(FontFamily::Mono)
+                            ->alignment(Alignment::End),
+                    ]),
+                    Tables\Columns\Layout\Split::make([
+                        Tables\Columns\TextColumn::make('type.name')
+                            ->color('primary')
+                            ->weight(FontWeight::Bold)
+                            ->fontFamily(FontFamily::Mono)
+                            ->badge(),
+                        Tables\Columns\TextColumn::make('status')
+                            ->label(fn(ProjectStatus $state): ?string => $state->getLabel())
+                            ->icon(fn(ProjectStatus $state): ?string => $state->getIcon())
+                            ->color(fn(ProjectStatus $state): ?string => $state->getColor())
+                            ->badge(),
+                    ]),
+                ])
+                    ->space(3),
+            ])
+            ->defaultSort('start_date', 'desc')
+            ->contentGrid([
+                'md' => 2,
+                'lg' => 3,
+                'xl' => 4,
+            ])
+            ->paginated([
+                12,
+                24,
+                48,
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('type_id')
@@ -70,7 +88,7 @@ class ProjectResource extends Resource
                     ->options(ProjectStatus::options()),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                // Tables\Actions\ViewAction::make(),
             ]);
     }
 
@@ -150,10 +168,10 @@ class ProjectResource extends Resource
         ];
     }
 
-    public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::count();
-    }
+    // public static function getNavigationBadge(): ?string
+    // {
+    //     return static::getModel()::count();
+    // }
 
     public static function getPages(): array
     {

@@ -11,6 +11,7 @@ use Filament\Infolists;
 use Filament\Infolists\Components\SpatieMediaLibraryImageEntry;
 use Filament\Infolists\Components\SpatieTagsEntry;
 use Filament\Infolists\Infolist;
+use Illuminate\Database\Eloquent\Builder;
 
 class ExperienceResource extends Resource
 {
@@ -28,6 +29,7 @@ class ExperienceResource extends Resource
                     ->label('No.')
                     ->rowIndex(),
                 Tables\Columns\SpatieMediaLibraryImageColumn::make('logo')
+                    ->label('')
                     ->collection('experience-logos'),
                 Tables\Columns\TextColumn::make('company')
                     ->searchable()
@@ -44,6 +46,7 @@ class ExperienceResource extends Resource
                     ->date()
                     ->sortable(),
             ])
+            ->defaultSort('end_date', 'desc')
             ->filters([
                 // Tables\Filters\TrashedFilter::make(),
             ])
@@ -123,10 +126,10 @@ class ExperienceResource extends Resource
         ];
     }
 
-    public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::count();
-    }
+    // public static function getNavigationBadge(): ?string
+    // {
+    //     return static::getModel()::count();
+    // }
 
     public static function getPages(): array
     {

@@ -7,6 +7,7 @@ use App\Models\Article;
 use App\Models\Category;
 use Filament\Forms;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Forms\Components\SpatieTagsInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -60,6 +61,7 @@ class ArticleResource extends Resource
                                 Forms\Components\Hidden::make('slug'),
                             ])
                             ->required(),
+                        SpatieTagsInput::make('tags'),
                         Forms\Components\Toggle::make('is_published')
                             ->label('Publish')
                             ->inline(false)
