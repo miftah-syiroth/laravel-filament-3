@@ -113,6 +113,7 @@ class ExperienceResource extends Resource
                     ->schema([
                         SpatieMediaLibraryImageEntry::make('media')
                             ->collection('experience-images')
+                            ->simpleLightbox()
                             ->grow(false)
                             ->hiddenLabel(),
                     ]),

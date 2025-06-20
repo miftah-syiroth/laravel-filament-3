@@ -18,6 +18,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use Filament\Navigation\NavigationItem;
+use SolutionForest\FilamentSimpleLightBox\SimpleLightBoxPlugin;
 
 class PanelProvider extends BasePanelProvider
 {
@@ -38,6 +39,7 @@ class PanelProvider extends BasePanelProvider
             ->pages([
                 Pages\Dashboard::class,
             ])
+            ->plugin(SimpleLightBoxPlugin::make())
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 // Widgets\FilamentInfoWidget::class,

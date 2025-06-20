@@ -130,6 +130,7 @@ class ArticleResource extends Resource
                     ->schema([
                         SpatieMediaLibraryImageEntry::make('article-image')
                             ->collection('article-images')
+                            ->simpleLightbox()
                             ->grow(false)
                             ->hiddenLabel(),
                     ]),

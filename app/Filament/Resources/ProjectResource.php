@@ -156,6 +156,7 @@ class ProjectResource extends Resource
                         SpatieMediaLibraryImageEntry::make('project-image')
                             ->collection('project-images')
                             ->grow(false)
+                            ->simpleLightbox()
                             ->hiddenLabel(),
                     ]),
             ]);

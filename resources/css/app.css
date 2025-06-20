@@ -1,4 +1,5 @@
-@import 'tailwindcss';
+@import "tailwindcss/preflight";
+@import "tailwindcss/utilities";
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -8,4 +9,71 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles for project image buttons */
+.project-image-button {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border: 2px solid #e5e7eb;
+}
+
+.project-image-button:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    border-color: #3b82f6;
+    transform: scale(1.05) translateY(-0.25rem);
+}
+
+.project-image-button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0);
+    transition: all 0.3s;
+    border-radius: 0.5rem;
+}
+
+.project-image-button:hover::before {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.project-image-button img {
+    border-radius: 0.5rem;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    transition: all 0.3s;
+}
+
+.project-image-button:hover img {
+    transform: scale(1.1);
+}
+
+/* Overlay text for better UX */
+.project-image-button::after {
+    content: '👁️ Lihat';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-weight: 600;
+    font-size: 0.875rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+}
+
+.project-image-button:hover::after {
+    opacity: 1;
 }

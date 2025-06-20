@@ -15,7 +15,8 @@
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
         "livewire/livewire": "^3.6",
-        "postare/blade-mdi": "^1.1"
+        "postare/blade-mdi": "^1.1",
+        "solution-forest/filament-simplelightbox": "^0.0.11"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.15",

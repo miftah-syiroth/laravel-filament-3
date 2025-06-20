@@ -118,6 +118,7 @@ class EducationResource extends Resource
                     ->schema([
                         SpatieMediaLibraryImageEntry::make('media')
                             ->collection('education-images')
+                            ->simpleLightbox()
                             ->grow(false)
                             ->hiddenLabel(),
                     ]),
