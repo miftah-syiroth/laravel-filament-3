@@ -47,6 +47,10 @@ class AuthPanelProvider extends PanelProvider
             ->plugin(FilamentSpatieRolesPermissionsPlugin::make())
             ->login(Login::class)
             ->profile(isSimple: false)
+            ->renderHook(
+              'panels::head.start',
+                fn () => view('analyticsTag'),
+            )
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
