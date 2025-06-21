@@ -53,6 +53,10 @@ class PanelProvider extends BasePanelProvider
                     ->icon('heroicon-o-arrow-right-on-rectangle')
                     ->sort(4),
             ])
+            ->renderHook(
+              'panels::head.start',
+                fn () => view('analyticsTag'),
+            )
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
