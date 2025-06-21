@@ -56,7 +56,7 @@ return [
   ],
 
   'most_visited_pages' => [
-    'filament_dashboard' => true,
+    'filament_dashboard' => false,
     'global' => false,
   ],
 
