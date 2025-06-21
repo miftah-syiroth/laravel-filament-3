@@ -19,6 +19,8 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
 use App\Filament\Auth\Pages\Login;
+use SolutionForest\FilamentSimpleLightBox\SimpleLightBoxPlugin;
+
 
 class AuthPanelProvider extends PanelProvider
 {
@@ -44,7 +46,11 @@ class AuthPanelProvider extends PanelProvider
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
             ])
-            ->plugin(FilamentSpatieRolesPermissionsPlugin::make())
+            ->plugins([
+                FilamentSpatieRolesPermissionsPlugin::make(),
+                SimpleLightBoxPlugin::make(),
+                \BezhanSalleh\FilamentGoogleAnalytics\FilamentGoogleAnalyticsPlugin::make()
+            ])
             ->login(Login::class)
             ->profile(isSimple: false)
             ->renderHook(
