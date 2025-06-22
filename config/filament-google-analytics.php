@@ -16,8 +16,8 @@ return [
     'global' => false,
   ],
   'visitors' => [
-    'filament_dashboard' => true,
-    'global' => false,
+    'filament_dashboard' => false,
+    'global' => true,
   ],
 
   'active_users_one_day' => [
@@ -36,8 +36,8 @@ return [
   ],
 
   'sessions' => [
-    'filament_dashboard' => true,
-    'global' => false,
+    'filament_dashboard' => false,
+    'global' => true,
   ],
 
   'sessions_duration' => [
@@ -46,13 +46,13 @@ return [
   ],
 
   'sessions_by_country' => [
-    'filament_dashboard' => true,
-    'global' => false,
+    'filament_dashboard' => false,
+    'global' => true,
   ],
 
   'sessions_by_device' => [
-    'filament_dashboard' => true,
-    'global' => false,
+    'filament_dashboard' => false,
+    'global' => true,
   ],
 
   'most_visited_pages' => [
