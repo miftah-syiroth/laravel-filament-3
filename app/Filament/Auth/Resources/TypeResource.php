@@ -3,21 +3,17 @@
 namespace App\Filament\Auth\Resources;
 
 use App\Filament\Auth\Resources\TypeResource\Pages;
-use App\Filament\Auth\Resources\TypeResource\RelationManagers;
 use App\Models\Type;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 
 class TypeResource extends Resource
 {
     protected static ?string $model = Type::class;
-    protected static bool $shouldSkipAuthorization = true;
     protected static ?string $recordTitleAttribute = 'name';
     protected static ?string $navigationIcon = 'heroicon-o-tag';
 
@@ -61,9 +57,6 @@ class TypeResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-                Tables\Actions\ForceDeleteAction::make(),
-                Tables\Actions\RestoreAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -74,23 +67,10 @@ class TypeResource extends Resource
             ]);
     }
 
-    public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::count();
-    }
-
     public static function getPages(): array
     {
         return [
             'index' => Pages\ManageTypes::route('/'),
         ];
     }
-
-    // public static function getEloquentQuery(): Builder
-    // {
-    //     return parent::getEloquentQuery()
-    //         ->withoutGlobalScopes([
-    //             SoftDeletingScope::class,
-    //         ]);
-    // }
 }
