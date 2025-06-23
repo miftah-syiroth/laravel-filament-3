@@ -2,11 +2,6 @@
 
 namespace App\Filament\Auth\Pages;
 
-use Filament\Pages\Page;
+use App\Filament\Pages\AboutMe as PagesAboutMe;
 
-class AboutMe extends Page
-{
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
-
-    protected static string $view = 'filament.auth.pages.about-me';
-}
+class AboutMe extends PagesAboutMe {}

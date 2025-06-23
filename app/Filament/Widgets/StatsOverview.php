@@ -4,15 +4,25 @@ namespace App\Filament\Widgets;
 
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use App\Models\User;
 
 class StatsOverview extends BaseWidget
 {
   protected function getStats(): array
   {
     return [
-      Stat::make('Unique views', '192.1k'),
-      Stat::make('Bounce rate', '21%'),
-      Stat::make('Average time on page', '3:12'),
+      Stat::make('Member', User::count())
+        ->description('Thank you for your support')
+        ->descriptionIcon('heroicon-m-heart')
+        ->color('success'),
+      Stat::make('Comments', '100')
+        ->description('50 unpublish')
+        ->descriptionIcon('heroicon-m-eye-slash')
+        ->color('warning'),
+      Stat::make('Messages', '100')
+        ->description('50 unread')
+        ->descriptionIcon('heroicon-m-envelope')
+        ->color('info'),
     ];
   }
 }
