@@ -1,8 +1,3 @@
 <x-filament-panels::page>
-  <div class="flex flex-col xl:flex-row gap-6">
-    <div class="w-full">
-      {{ $this->aboutMeInfolist }}
-    </div>
-  </div>
-
+  {{ $this->aboutMeInfolist }}
 </x-filament-panels::page>
