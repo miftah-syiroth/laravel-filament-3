@@ -11,7 +11,6 @@ use Filament\Infolists;
 use Filament\Infolists\Components\SpatieMediaLibraryImageEntry;
 use Filament\Infolists\Components\SpatieTagsEntry;
 use Filament\Infolists\Infolist;
-use Illuminate\Database\Eloquent\Builder;
 
 class ExperienceResource extends Resource
 {

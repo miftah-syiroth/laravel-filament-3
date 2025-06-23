@@ -39,11 +39,9 @@ class EducationResource extends Resource
                     ->url(fn($record) => $record->url)
                     ->openUrlInNewTab(),
                 Tables\Columns\TextColumn::make('start_date')
-                    ->label('Tahun Masuk')
                     ->date('d M Y')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('end_date')
-                    ->label('Tahun Lulus')
                     ->date('d M Y')
                     ->sortable(),
             ])

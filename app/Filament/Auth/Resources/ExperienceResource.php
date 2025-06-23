@@ -3,7 +3,6 @@
 namespace App\Filament\Auth\Resources;
 
 use App\Filament\Auth\Resources\ExperienceResource\Pages;
-use App\Filament\Auth\Resources\ExperienceResource\RelationManagers;
 use App\Models\Experience;
 use Filament\Forms;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
@@ -12,8 +11,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Infolists;
 use Filament\Infolists\Components\Actions\Action;
 use Filament\Infolists\Components\SpatieMediaLibraryImageEntry;
@@ -23,7 +20,6 @@ use Filament\Infolists\Infolist;
 class ExperienceResource extends Resource
 {
     protected static ?string $model = Experience::class;
-    protected static bool $shouldSkipAuthorization = true;
     protected static ?string $recordTitleAttribute = 'company';
     protected static ?string $navigationIcon = 'mdi-briefcase-outline';
     protected static ?int $navigationSort = 2;
@@ -83,7 +79,11 @@ class ExperienceResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('index')
+                    ->label('No.')
+                    ->rowIndex(),
                 Tables\Columns\SpatieMediaLibraryImageColumn::make('logo')
+                    ->label('')
                     ->collection('experience-logos'),
                 Tables\Columns\TextColumn::make('company')
                     ->searchable()
@@ -100,11 +100,12 @@ class ExperienceResource extends Resource
                     ->date()
                     ->sortable(),
             ])
+            ->defaultSort('end_date', 'desc')
             ->filters([
                 // Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Tables\Actions\ViewAction::make()->visible(auth()->user()->hasRole('admin')),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -120,15 +121,7 @@ class ExperienceResource extends Resource
     {
         return $infolist
             ->schema([
-                Infolists\Components\Section::make('Experience Details')
-                    ->description('Informasi detail tentang experience')
-                    ->headerActions([
-                        Action::make('edit')
-                            ->icon('heroicon-o-pencil-square')
-                            ->color('primary')
-                            ->url(fn($record) => static::getUrl('edit', ['record' => $record])),
-                    ])
-                    ->icon('heroicon-o-document-text')
+                Infolists\Components\Section::make()
                     ->schema([
                         Infolists\Components\Split::make([
                             Infolists\Components\ImageEntry::make('logo')
@@ -178,10 +171,11 @@ class ExperienceResource extends Resource
                     ->schema([
                         Infolists\Components\TextEntry::make('content')->prose()->markdown()->html()->hiddenLabel(),
                     ]),
-                Infolists\Components\Section::make('Screenshots')
+                Infolists\Components\Section::make('Captures')
                     ->schema([
                         SpatieMediaLibraryImageEntry::make('media')
                             ->collection('experience-images')
+                            ->simpleLightbox()
                             ->grow(false)
                             ->hiddenLabel(),
                     ]),
@@ -193,11 +187,6 @@ class ExperienceResource extends Resource
         return [
             //
         ];
-    }
-
-    public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::count();
     }
 
     public static function getPages(): array

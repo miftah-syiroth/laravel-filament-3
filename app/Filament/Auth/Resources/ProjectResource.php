@@ -23,11 +23,13 @@ use Filament\Infolists\Components\Actions\Action;
 use Filament\Infolists\Components\SpatieMediaLibraryImageEntry;
 use Filament\Infolists\Components\SpatieTagsEntry;
 use Filament\Infolists\Infolist;
+use Filament\Support\Enums\Alignment;
+use Filament\Support\Enums\FontFamily;
+use Filament\Support\Enums\FontWeight;
 
 class ProjectResource extends Resource
 {
     protected static ?string $model = Project::class;
-    protected static bool $shouldSkipAuthorization = true;
     protected static ?string $recordTitleAttribute = 'title';
     protected static ?string $navigationIcon = 'mdi-application-brackets-outline';
     protected static ?int $navigationSort = 3;
@@ -101,28 +103,55 @@ class ProjectResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\SpatieMediaLibraryImageColumn::make('project-image')
-                    ->label('Image')
-                    ->collection('project-images')
-                    ->filterMediaUsing(
-                        fn(Collection $media): Collection => $media->take(1),
-                    ),
-                Tables\Columns\TextColumn::make('title')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('type.name'),
-                Tables\Columns\TextColumn::make('start_date')
-                    ->label('Start Date')
-                    ->sortable()
-                    ->date(),
-                Tables\Columns\TextColumn::make('end_date')
-                    ->label('End Date')
-                    ->sortable()
-                    ->date(),
-                Tables\Columns\TextColumn::make('status')
-                    ->badge(),
-                Tables\Columns\TextColumn::make('url')
-                    ->url(fn($record) => $record->url)
-                    ->openUrlInNewTab(),
+                Tables\Columns\Layout\Stack::make([
+                    Tables\Columns\SpatieMediaLibraryImageColumn::make('project-image')
+                        ->label('')
+                        ->collection('project-images')
+                        ->filterMediaUsing(
+                            fn(Collection $media): Collection => $media->take(1),
+                        )
+                        ->width('100%')
+                        ->height('100%'),
+                    Tables\Columns\Layout\Stack::make([
+                        Tables\Columns\TextColumn::make('title')
+                            ->searchable()
+                            ->weight(FontWeight::Bold),
+                        Tables\Columns\TextColumn::make('excerpt')
+                            ->color('gray')
+                            ->limit(50),
+                        Tables\Columns\TextColumn::make('start_date')
+                            ->label('Start Date')
+                            ->sortable()
+                            ->date('d/m/Y')
+                            ->color('gray')
+                            ->fontFamily(FontFamily::Mono)
+                            ->alignment(Alignment::End),
+                    ]),
+                    Tables\Columns\Layout\Split::make([
+                        Tables\Columns\TextColumn::make('type.name')
+                            ->color('primary')
+                            ->weight(FontWeight::Bold)
+                            ->fontFamily(FontFamily::Mono)
+                            ->badge(),
+                        Tables\Columns\TextColumn::make('status')
+                            ->label(fn(ProjectStatus $state): ?string => $state->getLabel())
+                            ->icon(fn(ProjectStatus $state): ?string => $state->getIcon())
+                            ->color(fn(ProjectStatus $state): ?string => $state->getColor())
+                            ->badge(),
+                    ]),
+                ])
+                    ->space(3),
+            ])
+            ->defaultSort('start_date', 'desc')
+            ->contentGrid([
+                'md' => 2,
+                'lg' => 3,
+                'xl' => 4,
+            ])
+            ->paginated([
+                12,
+                24,
+                48,
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('type_id')
@@ -132,7 +161,7 @@ class ProjectResource extends Resource
                     ->options(ProjectStatus::options()),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Tables\Actions\ViewAction::make()->visible(auth()->user()->hasRole('admin')),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -152,15 +181,7 @@ class ProjectResource extends Resource
     {
         return $infolist
             ->schema([
-                Infolists\Components\Section::make('Project Details')
-                    ->description('Informasi detail tentang project')
-                    ->icon('heroicon-o-document-text')
-                    ->headerActions([
-                        Action::make('edit')
-                            ->icon('heroicon-o-pencil-square')
-                            ->color('primary')
-                            ->url(fn($record) => static::getUrl('edit', ['record' => $record])),
-                    ])
+                Infolists\Components\Section::make()
                     ->schema([
                         Infolists\Components\Grid::make(3)
                             ->schema([
@@ -173,9 +194,6 @@ class ProjectResource extends Resource
                                         ->label('Tipe Project')
                                         ->badge()
                                         ->color('primary'),
-                                    Infolists\Components\TextEntry::make('slug')
-                                        ->label('URL Slug')
-                                        ->color('gray'),
                                     Infolists\Components\TextEntry::make('url')
                                         ->label('Link Project')
                                         ->url(fn($record) => $record->url)
@@ -198,24 +216,24 @@ class ProjectResource extends Resource
                                         ->color('success')
                                         ->icon('heroicon-o-calendar')
                                         ->placeholder('-'),
+                                ]),
+                                Infolists\Components\Group::make([
                                     Infolists\Components\TextEntry::make('status')
                                         ->badge()
                                         ->icon(fn(ProjectStatus $state): ?string => $state->getIcon()),
-                                ]),
-                                Infolists\Components\Group::make([
-                                    Infolists\Components\TextEntry::make('excerpt')
-                                        ->label('Deskripsi Singkat')
-                                        ->markdown()
-                                        ->prose()
-                                        ->placeholder('-'),
                                     SpatieTagsEntry::make('tags')
                                         ->label('Tags')
                                         ->color('primary'),
                                 ]),
                             ]),
                     ]),
-                Infolists\Components\Section::make('Content')
+                Infolists\Components\Section::make()
                     ->schema([
+                        Infolists\Components\TextEntry::make('excerpt')
+                            ->hiddenLabel()
+                            ->fontFamily(FontFamily::Mono)
+                            ->color('gray')
+                            ->prose(),
                         Infolists\Components\TextEntry::make('content')->prose()->markdown()->html()->hiddenLabel(),
                     ]),
                 Infolists\Components\Section::make('Screenshots')
@@ -223,6 +241,7 @@ class ProjectResource extends Resource
                         SpatieMediaLibraryImageEntry::make('project-image')
                             ->collection('project-images')
                             ->grow(false)
+                            ->simpleLightbox()
                             ->hiddenLabel(),
                     ]),
             ]);
@@ -233,11 +252,6 @@ class ProjectResource extends Resource
         return [
             //
         ];
-    }
-
-    public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::count();
     }
 
     public static function getPages(): array

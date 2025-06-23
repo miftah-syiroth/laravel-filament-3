@@ -3,7 +3,6 @@
 namespace App\Filament\Auth\Resources;
 
 use App\Filament\Auth\Resources\EducationResource\Pages;
-use App\Filament\Auth\Resources\EducationResource\RelationManagers;
 use App\Models\Education;
 use Filament\Forms;
 use Filament\Forms\Components\RichEditor;
@@ -11,8 +10,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\SpatieTagsInput;
 use Filament\Infolists;
@@ -25,7 +22,6 @@ use Filament\Infolists\Infolist;
 class EducationResource extends Resource
 {
     protected static ?string $model = Education::class;
-    protected static bool $shouldSkipAuthorization = true;
     protected static ?string $recordTitleAttribute = 'institution';
     protected static ?string $navigationIcon = 'mdi-school-outline';
     protected static ?int $navigationSort = 1;
@@ -79,7 +75,11 @@ class EducationResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('index')
+                ->label('No.')
+                ->rowIndex(),
                 Tables\Columns\SpatieMediaLibraryImageColumn::make('logo')
+                    ->label('')
                     ->collection('education-logos'),
                 Tables\Columns\TextColumn::make('institution')
                     ->searchable(),
@@ -95,11 +95,12 @@ class EducationResource extends Resource
                     ->date()
                     ->sortable(),
             ])
+            ->defaultSort('end_date', 'desc')
             ->filters([
                 // Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Tables\Actions\ViewAction::make()->visible(auth()->user()->hasRole('admin')),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -115,21 +116,13 @@ class EducationResource extends Resource
     {
         return $infolist
             ->schema([
-                Infolists\Components\Section::make('Education Details')
-                    ->description('Informasi detail tentang education')
-                    ->icon('heroicon-o-document-text')
-                    ->headerActions([
-                        Action::make('edit')
-                            ->icon('heroicon-o-pencil-square')
-                            ->color('primary')
-                            ->url(fn ($record) => static::getUrl('edit', ['record' => $record])),
-                    ])
+                Infolists\Components\Section::make()
                     ->schema([
                         Infolists\Components\Split::make([
                             Infolists\Components\ImageEntry::make('logo')
                                 ->grow(false)
                                 ->hiddenLabel()
-                                ->placeholder('-'),
+                                ->placeholder('logo'),
                             Infolists\Components\Grid::make(2)
                                 ->schema([
                                     Infolists\Components\Group::make([
@@ -177,10 +170,11 @@ class EducationResource extends Resource
                     ->schema([
                         Infolists\Components\TextEntry::make('content')->prose()->markdown()->html()->hiddenLabel(),
                     ]),
-                Infolists\Components\Section::make('Screenshots')
+                Infolists\Components\Section::make('Captures')
                     ->schema([
                         SpatieMediaLibraryImageEntry::make('media')
                             ->collection('education-images')
+                            ->simpleLightbox()
                             ->grow(false)
                             ->hiddenLabel(),
                     ]),
@@ -194,10 +188,6 @@ class EducationResource extends Resource
         ];
     }
 
-    public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::count();
-    }
 
     public static function getPages(): array
     {

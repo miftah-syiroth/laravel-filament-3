@@ -17,13 +17,12 @@ use Filament\Infolists\Components\SpatieMediaLibraryImageEntry;
 use Filament\Infolists\Components\SpatieTagsEntry;
 use Filament\Infolists\Infolist;
 use Filament\Support\Enums\FontFamily;
+use Filament\Support\Enums\FontWeight;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 
 class ArticleResource extends Resource
 {
-    protected static bool $shouldSkipAuthorization = true;
-
     protected static ?string $model = Article::class;
     protected static ?string $recordTitleAttribute = 'title';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
@@ -97,22 +96,51 @@ class ArticleResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\SpatieMediaLibraryImageColumn::make('article-image')
-                    ->label('Image')
-                    ->collection('article-images')
-                    ->filterMediaUsing(
-                        fn(Collection $media): Collection => $media->take(1),
-                    ),
-                Tables\Columns\TextColumn::make('category.name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('title')
-                    ->searchable(),
-                Tables\Columns\IconColumn::make('is_published')
-                    ->label('Publish')
-                    ->boolean(),
-                Tables\Columns\TextColumn::make('published_at')
-                    ->dateTime('d M Y H:i')
-                    ->sortable(),
+                Tables\Columns\Layout\Stack::make([
+                    Tables\Columns\SpatieMediaLibraryImageColumn::make('article-image')
+                        ->label('')
+                        ->collection('article-images')
+                        ->filterMediaUsing(
+                            fn(Collection $media): Collection => $media->take(1),
+                        )
+                        ->width('100%')
+                        ->height('100%'),
+                    Tables\Columns\Layout\Stack::make([
+                        Tables\Columns\TextColumn::make('title')
+                            ->searchable()
+                            ->weight(FontWeight::Bold),
+                        Tables\Columns\TextColumn::make('excerpt')
+                            ->searchable()
+                            ->color('gray')
+                            ->limit(50),
+                    ]),
+                    Tables\Columns\Layout\Split::make([
+                        Tables\Columns\TextColumn::make('category.name')
+                            ->searchable()
+                            ->color('primary')
+                            ->weight(FontWeight::Bold)
+                            ->fontFamily(FontFamily::Mono)
+                            ->badge()
+                            ->size('sm'),
+                        Tables\Columns\TextColumn::make('published_at')
+                            ->dateTime('d/m/Y')
+                            ->sortable()
+                            ->color('gray')
+                            ->fontFamily(FontFamily::Mono)
+                            ->size('sm'),
+                    ]),
+                ])->space(3),
+            ])
+            ->defaultSort('published_at', 'desc')
+            ->contentGrid([
+                'md' => 2,
+                'lg' => 3,
+                'xl' => 4,
+            ])
+            ->paginated([
+                12,
+                24,
+                48,
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('category_id')
@@ -125,7 +153,7 @@ class ArticleResource extends Resource
                     ]),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Tables\Actions\ViewAction::make()->visible(auth()->user()->hasRole('admin')),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -180,20 +208,21 @@ class ArticleResource extends Resource
                             ->html()
                             ->prose(),
                     ]),
-                Infolists\Components\Section::make('Screenshots')
+                Infolists\Components\Section::make()
                     ->schema([
                         SpatieMediaLibraryImageEntry::make('article-image')
                             ->collection('article-images')
+                            ->simpleLightbox()
                             ->grow(false)
                             ->hiddenLabel(),
                     ]),
             ]);
     }
 
-    public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::count();
-    }
+    // public static function getNavigationBadge(): ?string
+    // {
+    //     return static::getModel()::count();
+    // }
 
     public static function getRelations(): array
     {

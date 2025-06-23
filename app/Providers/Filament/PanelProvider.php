@@ -40,7 +40,7 @@ class PanelProvider extends BasePanelProvider
         // config('filament-logger.activity_resource')
       ])
       ->pages([
-        Pages\Dashboard::class,
+        // Pages\Dashboard::class,
       ])
       ->plugins([
         SimpleLightBoxPlugin::make(),
