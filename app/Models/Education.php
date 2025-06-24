@@ -9,19 +9,26 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\Tags\HasTags;
+use RalphJSmit\Laravel\SEO\Support\HasSEO;
 
 class Education extends Model implements HasMedia
 {
-    use HasUlids, SoftDeletes, InteractsWithMedia, HasTags, HasFactory;
+    use HasUlids, HasSEO, SoftDeletes, InteractsWithMedia, HasTags, HasFactory;
 
     protected $fillable = [
         'institution',
         'url',
+        'slug',
         'major',
         'start_date',
         'end_date',
         'content',
     ];
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
 
     // append logo to the model
     public function getLogoAttribute()

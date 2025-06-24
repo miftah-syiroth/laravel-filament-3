@@ -20,6 +20,8 @@
         "laravel/tinker": "^2.10.1",
         "livewire/livewire": "^3.6",
         "postare/blade-mdi": "^1.1",
+        "ralphjsmit/laravel-filament-seo": "^1.5",
+        "ralphjsmit/laravel-seo": "^1.7",
         "solution-forest/filament-simplelightbox": "^0.0.11"
     },
     "require-dev": {

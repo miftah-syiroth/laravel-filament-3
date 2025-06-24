@@ -11,10 +11,11 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Tags\HasTags;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use RalphJSmit\Laravel\SEO\Support\HasSEO;
 
 class Project extends Model implements HasMedia
 {
-  use HasUlids, SoftDeletes, InteractsWithMedia, HasTags, HasFactory;
+  use HasUlids, SoftDeletes, InteractsWithMedia, HasTags, HasFactory, HasSEO;
 
   protected $fillable = [
     'type_id',
@@ -33,6 +34,11 @@ class Project extends Model implements HasMedia
     'start_date' => 'date',
     'end_date' => 'date',
   ];
+
+  public function getRouteKeyName(): string
+  {
+      return 'slug';
+  }
 
   /**
    * Get the type that owns the Project

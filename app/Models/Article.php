@@ -10,10 +10,11 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Tags\HasTags;
+use RalphJSmit\Laravel\SEO\Support\HasSEO;
 
 class Article extends Model implements HasMedia
 {
-    use HasUlids, SoftDeletes, InteractsWithMedia, HasTags, HasFactory;
+    use HasUlids, SoftDeletes, InteractsWithMedia, HasTags, HasFactory, HasSEO;
 
     protected $fillable = [
         'category_id',
@@ -28,6 +29,11 @@ class Article extends Model implements HasMedia
     protected $casts = [
         'published_at' => 'datetime',
     ];
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
 
     public function getImagesAttribute()
     {

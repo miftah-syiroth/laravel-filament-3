@@ -13,10 +13,10 @@ use Filament\Tables\Table;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\SpatieTagsInput;
 use Filament\Infolists;
-use Filament\Infolists\Components\Actions\Action;
 use Filament\Infolists\Components\SpatieMediaLibraryImageEntry;
 use Filament\Infolists\Components\SpatieTagsEntry;
 use Filament\Infolists\Infolist;
+use Illuminate\Support\Str;
 
 
 class EducationResource extends Resource
@@ -33,8 +33,17 @@ class EducationResource extends Resource
                 Forms\Components\Section::make()
                     ->schema([
                         Forms\Components\TextInput::make('institution')
+                            ->placeholder("Institution's name")
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(fn(Forms\Set $set, ?string $state) => $set('slug', Str::slug($state)))
                             ->required()
                             ->maxLength(255),
+                        Forms\Components\TextInput::make('slug')
+                            ->disabled()
+                            ->dehydrated()
+                            ->required()
+                            ->maxLength(255)
+                            ->unique(Education::class, 'slug', ignoreRecord: true),
                         Forms\Components\TextInput::make('major')
                             ->required()
                             ->maxLength(255),
@@ -76,8 +85,8 @@ class EducationResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('index')
-                ->label('No.')
-                ->rowIndex(),
+                    ->label('No.')
+                    ->rowIndex(),
                 Tables\Columns\SpatieMediaLibraryImageColumn::make('logo')
                     ->label('')
                     ->collection('education-logos'),

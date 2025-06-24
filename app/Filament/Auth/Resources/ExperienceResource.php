@@ -16,6 +16,7 @@ use Filament\Infolists\Components\Actions\Action;
 use Filament\Infolists\Components\SpatieMediaLibraryImageEntry;
 use Filament\Infolists\Components\SpatieTagsEntry;
 use Filament\Infolists\Infolist;
+use Illuminate\Support\Str;
 
 class ExperienceResource extends Resource
 {
@@ -31,8 +32,17 @@ class ExperienceResource extends Resource
                 Forms\Components\Section::make()
                     ->schema([
                         Forms\Components\TextInput::make('company')
+                            ->placeholder("Company's name")
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(fn(Forms\Set $set, ?string $state) => $set('slug', Str::slug($state)))
                             ->required()
                             ->maxLength(255),
+                        Forms\Components\TextInput::make('slug')
+                            ->disabled()
+                            ->dehydrated()
+                            ->required()
+                            ->maxLength(255)
+                            ->unique(Experience::class, 'slug', ignoreRecord: true),
                         Forms\Components\TextInput::make('address')
                             ->required()
                             ->maxLength(255),
