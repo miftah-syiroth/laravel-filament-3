@@ -9,13 +9,13 @@ use Illuminate\Contracts\Support\Htmlable;
 
 class ViewArticle extends ViewRecord
 {
-    protected static string $resource = ArticleResource::class;
+  protected static string $resource = ArticleResource::class;
 
-    public function getTitle(): string | Htmlable
-    {
-        /** @var Article */
-        $record = $this->getRecord();
+  public function getTitle(): string | Htmlable
+  {
+    /** @var Article */
+    $record = $this->getRecord();
 
-        return $record->title;
-    }
+    return $record->title;
+  }
 }

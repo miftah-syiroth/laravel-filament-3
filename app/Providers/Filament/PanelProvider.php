@@ -20,6 +20,7 @@ use App\Http\Middleware\RedirectIfAuthenticated;
 use Filament\Navigation\NavigationItem;
 use SolutionForest\FilamentSimpleLightBox\SimpleLightBoxPlugin;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
+use App\Settings\WebsiteSetting;
 
 class PanelProvider extends BasePanelProvider
 {
@@ -33,7 +34,7 @@ class PanelProvider extends BasePanelProvider
         'primary' => Color::Amber,
       ])
       ->brandName('Syiroth App')
-      // ->brandLogo(app(WebsiteSettings::class)->getLogoPath())
+      ->brandLogo(app(WebsiteSetting::class)->getLogoPath())
       ->topNavigation()
       ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
       ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')

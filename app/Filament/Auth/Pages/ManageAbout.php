@@ -14,6 +14,7 @@ class ManageAbout extends SettingsPage
   protected static string $settings = AboutSetting::class;
   protected static ?string $navigationLabel = 'About';
   protected static ?string $navigationGroup = 'Settings';
+  protected static ?int $navigationSort = 0;
 
   public static function canAccess(): bool
   {

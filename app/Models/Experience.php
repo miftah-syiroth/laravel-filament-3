@@ -9,11 +9,10 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\Tags\HasTags;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use RalphJSmit\Laravel\SEO\Support\HasSEO;
 
 class Experience extends Model implements HasMedia
 {
-    use HasUlids, HasSEO, SoftDeletes, InteractsWithMedia, HasTags, HasFactory;
+    use HasUlids, SoftDeletes, InteractsWithMedia, HasTags, HasFactory;
 
     protected $fillable = [
         'company',

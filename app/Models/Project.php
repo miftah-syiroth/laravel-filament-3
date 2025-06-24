@@ -11,11 +11,10 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Tags\HasTags;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use RalphJSmit\Laravel\SEO\Support\HasSEO;
 
 class Project extends Model implements HasMedia
 {
-  use HasUlids, SoftDeletes, InteractsWithMedia, HasTags, HasFactory, HasSEO;
+  use HasUlids, SoftDeletes, InteractsWithMedia, HasTags, HasFactory;
 
   protected $fillable = [
     'type_id',

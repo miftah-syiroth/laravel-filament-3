@@ -10,11 +10,10 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Tags\HasTags;
-use RalphJSmit\Laravel\SEO\Support\HasSEO;
 
 class Article extends Model implements HasMedia
 {
-    use HasUlids, SoftDeletes, InteractsWithMedia, HasTags, HasFactory, HasSEO;
+    use HasUlids, SoftDeletes, InteractsWithMedia, HasTags, HasFactory;
 
     protected $fillable = [
         'category_id',
@@ -43,5 +42,17 @@ class Article extends Model implements HasMedia
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function getDynamicSEOData(): SEOData
+    {
+        // $pathToFeaturedImageRelativeToPublicPath = // ..;
+
+        // Override only the properties you want:
+        return new SEOData(
+            title: $this->title,
+            description: $this->title,
+            image: $this->getFirstMediaUrl('article-images'),
+        );
     }
 }
