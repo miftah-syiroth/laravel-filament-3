@@ -78,6 +78,9 @@ class AuthPanelProvider extends PanelProvider
             $user->assignRole('member');
             return $user;
           })
+          ->authorizeUserUsing(function (FilamentSocialitePlugin $plugin, SocialiteUserContract $oauthUser) {
+            return true;
+          })
           // (optional) Change the associated model class.
           ->userModelClass(\App\Models\User::class)
           // (optional) Change the associated socialite class (see below).
