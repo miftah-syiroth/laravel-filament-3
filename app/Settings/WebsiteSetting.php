@@ -25,11 +25,17 @@ class WebsiteSetting extends Settings
 
   public function getLogoPath(): string
   {
-      return asset('storage/' . $this->logo);
+    if (!$this->logo) {
+      return '';
+    }
+    return asset('storage/' . $this->logo);
   }
 
   public function getFaviconPath(): string
   {
-      return asset('storage/' . $this->favicon);
+    if (!$this->favicon) {
+      return '';
+    }
+    return asset('storage/' . $this->favicon);
   }
 }
