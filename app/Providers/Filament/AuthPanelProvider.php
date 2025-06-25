@@ -48,7 +48,6 @@ class AuthPanelProvider extends PanelProvider
         FilamentSocialitePlugin::make()
           // (required) Add providers corresponding with providers in `config/services.php`.
           ->providers([
-            // Create a provider 'gitlab' corresponding to the Socialite driver with the same name.
             Provider::make('google')
               ->label('Google')
               ->icon('fab-google')
@@ -59,6 +58,7 @@ class AuthPanelProvider extends PanelProvider
               ->with([]),
           ])
           ->registration(true)
+          ->domainAllowList([])
           ->createUserUsing(function (string $provider, SocialiteUserContract $oauthUser, FilamentSocialitePlugin $plugin) {
             $user = User::create([
               'name' => $oauthUser->getName() ?? $oauthUser->getNickname() ?? 'User',
