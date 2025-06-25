@@ -40,7 +40,7 @@ class ProjectSeeder extends Seeder
         }
 
         // Buat 20 project
-        Project::factory(20)->create()->each(function ($project) use ($types, $tags) {
+        Project::factory(16)->create()->each(function ($project) use ($types, $tags) {
             // Assign random category
             $project->update([
                 'type_id' => $types->random()->id

@@ -10,6 +10,7 @@
         "althinect/filament-spatie-roles-permissions": "^2.3",
         "bezhansalleh/filament-google-analytics": "^2.1",
         "codeat3/blade-ant-design-icons": "^1.9",
+        "dutchcodingcompany/filament-socialite": "^2.4",
         "filament/filament": "^3.3",
         "filament/spatie-laravel-media-library-plugin": "^3.2",
         "filament/spatie-laravel-settings-plugin": "^3.2",

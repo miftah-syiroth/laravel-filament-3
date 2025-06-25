@@ -19,6 +19,14 @@ use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugi
 use App\Filament\Auth\Pages\Login;
 use SolutionForest\FilamentSimpleLightBox\SimpleLightBoxPlugin;
 
+use DutchCodingCompany\FilamentSocialite\FilamentSocialitePlugin;
+use DutchCodingCompany\FilamentSocialite\Provider;
+use Laravel\Socialite\Contracts\User as SocialiteUserContract;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use App\Models\User;
+
 class AuthPanelProvider extends PanelProvider
 {
   public function panel(Panel $panel): Panel
@@ -41,6 +49,39 @@ class AuthPanelProvider extends PanelProvider
       ->plugins([
         FilamentSpatieRolesPermissionsPlugin::make(),
         SimpleLightBoxPlugin::make(),
+        FilamentSocialitePlugin::make()
+          // (required) Add providers corresponding with providers in `config/services.php`.
+          ->providers([
+            // Create a provider 'gitlab' corresponding to the Socialite driver with the same name.
+            Provider::make('google')
+              ->label('Google')
+              ->icon('fab-google')
+              ->color(Color::hex('#4285F4'))
+              ->outlined(false)
+              ->stateless(false)
+              ->scopes(['openid', 'profile', 'email'])
+              ->with([]),
+          ])
+          // (optional) Override the panel slug to be used in the oauth routes. Defaults to the panel's configured path.
+          ->slug('auth')
+          // (optional) Enable/disable registration of new (socialite-) users.
+          ->registration(true)
+          // (optional) Enable/disable registration of new (socialite-) users using a callback.
+          // In this example, a login flow can only continue if there exists a user (Authenticatable) already.
+          // ->registration(fn(string $provider, SocialiteUserContract $oauthUser, ?Authenticatable $user) => (bool) $user)
+          ->createUserUsing(function (string $provider, SocialiteUserContract $oauthUser, FilamentSocialitePlugin $plugin) {
+            $user = User::create([
+              'name' => $oauthUser->getName() ?? $oauthUser->getNickname() ?? $oauthUser->getId() ?? 'Member',
+              'email' => $oauthUser->getEmail(),
+              'email_verified_at' => now(),
+            ]);
+            $user->assignRole('member');
+            return $user;
+          })
+          // (optional) Change the associated model class.
+          ->userModelClass(\App\Models\User::class)
+          // (optional) Change the associated socialite class (see below).
+          ->socialiteUserModelClass(\App\Models\SocialiteUser::class)
       ])
       ->discoverWidgets(in: app_path('Filament/Auth/Widgets'), for: 'App\\Filament\\Auth\\Widgets')
       ->widgets([

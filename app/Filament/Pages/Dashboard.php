@@ -11,12 +11,12 @@ use Filament\Infolists\Infolist;
 use Filament\Infolists;
 
 
-class AboutMe extends Page implements HasInfolists
+class Dashboard extends \Filament\Pages\Dashboard implements HasInfolists
 {
   protected $aboutData;
 
-  protected static ?string $navigationIcon = 'heroicon-o-document-text';
-  protected static string $view = 'filament.pages.about-me';
+  protected static ?string $navigationIcon = 'heroicon-o-home';
+  protected static string $view = 'filament.pages.dashboard';
 
 
   public function mount(AboutSetting $aboutSetting)
