@@ -18,7 +18,7 @@ class RedirectIfAuthenticated
     public function handle(Request $request, Closure $next): Response
     {
         if (Auth::check()) {
-            return redirect()->route('filament.auth.pages.about-me');
+            return redirect()->route('filament.auth.pages.dashboard');
         }
 
         // jika url terdapat /auth maka redirect ke '/'
