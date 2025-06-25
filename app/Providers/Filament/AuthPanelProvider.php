@@ -17,8 +17,11 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
 use App\Filament\Auth\Pages\Login;
+use App\Models\User;
 use SolutionForest\FilamentSimpleLightBox\SimpleLightBoxPlugin;
-// use App\Settings\WebsiteSetting;
+use DutchCodingCompany\FilamentSocialite\FilamentSocialitePlugin;
+use DutchCodingCompany\FilamentSocialite\Provider;
+use Laravel\Socialite\Contracts\User as SocialiteUserContract;
 
 class AuthPanelProvider extends PanelProvider
 {
@@ -42,6 +45,32 @@ class AuthPanelProvider extends PanelProvider
       ->plugins([
         FilamentSpatieRolesPermissionsPlugin::make(),
         SimpleLightBoxPlugin::make(),
+        FilamentSocialitePlugin::make()
+          // (required) Add providers corresponding with providers in `config/services.php`.
+          ->providers([
+            // Create a provider 'gitlab' corresponding to the Socialite driver with the same name.
+            Provider::make('google')
+              ->label('Google')
+              ->icon('fab-google')
+              ->color(Color::hex('#4285F4'))
+              ->outlined(false)
+              ->stateless(false)
+              ->scopes(['openid', 'profile', 'email'])
+              ->with([]),
+          ])
+          ->registration(true)
+          ->createUserUsing(function (string $provider, SocialiteUserContract $oauthUser, FilamentSocialitePlugin $plugin) {
+            $user = User::create([
+              'name' => $oauthUser->getName() ?? $oauthUser->getNickname() ?? 'User',
+              'email' => $oauthUser->getEmail(),
+              'email_verified_at' => now(),
+              'password' => null,
+            ]);
+            $user->assignRole('member');
+            return $user;
+          })
+          ->userModelClass(\App\Models\User::class)
+          ->socialiteUserModelClass(\App\Models\SocialiteUser::class)
       ])
       ->discoverWidgets(in: app_path('Filament/Auth/Widgets'), for: 'App\\Filament\\Auth\\Widgets')
       ->widgets([
