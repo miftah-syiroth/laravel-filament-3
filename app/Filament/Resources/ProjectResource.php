@@ -18,6 +18,7 @@ use Filament\Support\Enums\FontFamily;
 use Filament\Support\Enums\FontWeight;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Support\Enums\Alignment;
+use Illuminate\Database\Eloquent\Model;
 
 class ProjectResource extends Resource
 {
@@ -25,6 +26,17 @@ class ProjectResource extends Resource
     protected static ?string $recordTitleAttribute = 'title';
     protected static ?string $navigationIcon = 'mdi-application-brackets-outline';
     protected static ?int $navigationSort = 3;
+    protected static int $globalSearchResultsLimit = 20;
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['title'];
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [$record->excerpt];
+    }
 
     public static function table(Table $table): Table
     {

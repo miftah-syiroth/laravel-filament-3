@@ -14,9 +14,7 @@ use Illuminate\Support\Str;
 class TypeResource extends Resource
 {
     protected static ?string $model = Type::class;
-    protected static ?string $recordTitleAttribute = 'name';
     protected static ?string $navigationIcon = 'heroicon-o-tag';
-
     protected static ?string $navigationGroup = 'Settings';
     protected static ?int $navigationSort = 2;
 

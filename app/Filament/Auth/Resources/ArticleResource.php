@@ -20,6 +20,7 @@ use Filament\Support\Enums\FontFamily;
 use Filament\Support\Enums\FontWeight;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 class ArticleResource extends Resource
 {
@@ -27,6 +28,17 @@ class ArticleResource extends Resource
     protected static ?string $recordTitleAttribute = 'title';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?int $navigationSort = 0;
+    
+    protected static int $globalSearchResultsLimit = 20;
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['title'];
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [$record->excerpt];
+    }
 
     public static function form(Form $form): Form
     {

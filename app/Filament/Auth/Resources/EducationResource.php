@@ -25,6 +25,12 @@ class EducationResource extends Resource
     protected static ?string $recordTitleAttribute = 'institution';
     protected static ?string $navigationIcon = 'mdi-school-outline';
     protected static ?int $navigationSort = 1;
+    protected static int $globalSearchResultsLimit = 20;
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['institution', 'major'];
+    }
 
     public static function form(Form $form): Form
     {

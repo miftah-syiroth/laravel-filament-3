@@ -19,6 +19,12 @@ class ExperienceResource extends Resource
     protected static ?string $recordTitleAttribute = 'company';
     protected static ?string $navigationIcon = 'mdi-briefcase-outline';
     protected static ?int $navigationSort = 2;
+    protected static int $globalSearchResultsLimit = 20;
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['company', 'address', 'role', 'job_type'];
+    }
 
     public static function table(Table $table): Table
     {
