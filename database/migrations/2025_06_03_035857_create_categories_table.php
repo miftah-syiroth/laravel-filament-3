@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('categories', function (Blueprint $table) {
-            $table->ulid('id')->primary();
+            $table->ulid('id')->primary()->unique();
             $table->string('name');
             $table->softDeletes('deleted_at', precision: 0);
             $table->timestamps();
