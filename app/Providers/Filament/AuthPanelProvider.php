@@ -25,6 +25,7 @@ use Laravel\Socialite\Contracts\User as SocialiteUserContract;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 use App\Models\User;
 
 class AuthPanelProvider extends PanelProvider
@@ -70,15 +71,35 @@ class AuthPanelProvider extends PanelProvider
           // In this example, a login flow can only continue if there exists a user (Authenticatable) already.
           // ->registration(fn(string $provider, SocialiteUserContract $oauthUser, ?Authenticatable $user) => (bool) $user)
           ->createUserUsing(function (string $provider, SocialiteUserContract $oauthUser, FilamentSocialitePlugin $plugin) {
+            Log::info('Creating new user via OAuth', [
+              'provider' => $provider,
+              'email' => $oauthUser->getEmail(),
+              'name' => $oauthUser->getName(),
+            ]);
+            
             $user = User::create([
               'name' => $oauthUser->getName() ?? $oauthUser->getNickname() ?? $oauthUser->getId() ?? 'Member',
               'email' => $oauthUser->getEmail(),
               'email_verified_at' => now(),
             ]);
             $user->assignRole('member');
+            
+            Log::info('User created successfully', [
+              'user_id' => $user->id,
+              'email' => $user->email,
+            ]);
+            
             return $user;
           })
           ->authorizeUserUsing(function (FilamentSocialitePlugin $plugin, SocialiteUserContract $oauthUser) {
+            // Debug: Log untuk troubleshooting
+            Log::info('OAuth Authorization Check', [
+              'email' => $oauthUser->getEmail(),
+              'name' => $oauthUser->getName(),
+              'id' => $oauthUser->getId(),
+            ]);
+            
+            // Setelah login OAuth berhasil, user sudah authorized
             return true;
           })
           // (optional) Change the associated model class.
@@ -109,7 +130,7 @@ class AuthPanelProvider extends PanelProvider
         DispatchServingFilamentEvent::class,
       ])
       ->authMiddleware([
-        // Authenticate::class,
+        Authenticate::class,
       ]);
   }
 }
