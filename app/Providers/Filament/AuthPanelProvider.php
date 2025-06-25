@@ -19,7 +19,7 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
 use App\Filament\Auth\Pages\Login;
 use SolutionForest\FilamentSimpleLightBox\SimpleLightBoxPlugin;
-use App\Settings\WebsiteSetting;
+// use App\Settings\WebsiteSetting;
 
 class AuthPanelProvider extends PanelProvider
 {
@@ -33,7 +33,7 @@ class AuthPanelProvider extends PanelProvider
         'primary' => Color::Amber,
       ])
       ->brandName('Syiroth App')
-      ->brandLogo(app(WebsiteSetting::class)->getLogoPath())
+      // ->brandLogo(app(WebsiteSetting::class)->getLogoPath())
       ->topNavigation()
       ->discoverResources(in: app_path('Filament/Auth/Resources'), for: 'App\\Filament\\Auth\\Resources')
       ->discoverPages(in: app_path('Filament/Auth/Pages'), for: 'App\\Filament\\Auth\\Pages')
