@@ -9,7 +9,6 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Jeffgreco13\FilamentBreezy\BreezyCore;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -18,8 +17,11 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
 use App\Filament\Auth\Pages\Login;
+use App\Models\User;
 use SolutionForest\FilamentSimpleLightBox\SimpleLightBoxPlugin;
-// use App\Settings\WebsiteSetting;
+use DutchCodingCompany\FilamentSocialite\FilamentSocialitePlugin;
+use DutchCodingCompany\FilamentSocialite\Provider;
+use Laravel\Socialite\Contracts\User as SocialiteUserContract;
 
 class AuthPanelProvider extends PanelProvider
 {
@@ -43,15 +45,32 @@ class AuthPanelProvider extends PanelProvider
       ->plugins([
         FilamentSpatieRolesPermissionsPlugin::make(),
         SimpleLightBoxPlugin::make(),
-        BreezyCore::make()
-          ->myProfile(
-            shouldRegisterUserMenu: true, // Sets the 'account' link in the panel User Menu (default = true)
-            userMenuLabel: 'My Profile', // Customizes the 'account' link label in the panel User Menu (default = null)
-            shouldRegisterNavigation: false, // Adds a main navigation item for the My Profile page (default = false)
-            navigationGroup: 'Settings', // Sets the navigation group for the My Profile page (default = null)
-            hasAvatars: false, // Enables the avatar upload form component (default = false)
-            slug: 'my-profile' // Sets the slug for the profile page (default = 'my-profile')
-          )
+        FilamentSocialitePlugin::make()
+          // (required) Add providers corresponding with providers in `config/services.php`.
+          ->providers([
+            // Create a provider 'gitlab' corresponding to the Socialite driver with the same name.
+            Provider::make('google')
+              ->label('Google')
+              ->icon('fab-google')
+              ->color(Color::hex('#4285F4'))
+              ->outlined(false)
+              ->stateless(false)
+              ->scopes(['openid', 'profile', 'email'])
+              ->with([]),
+          ])
+          ->registration(true)
+          ->createUserUsing(function (string $provider, SocialiteUserContract $oauthUser, FilamentSocialitePlugin $plugin) {
+            $user = User::create([
+              'name' => $oauthUser->getName() ?? $oauthUser->getNickname() ?? 'User',
+              'email' => $oauthUser->getEmail(),
+              'email_verified_at' => now(),
+              'password' => null,
+            ]);
+            $user->assignRole('member');
+            return $user;
+          })
+          ->userModelClass(\App\Models\User::class)
+          ->socialiteUserModelClass(\App\Models\SocialiteUser::class)
       ])
       ->discoverWidgets(in: app_path('Filament/Auth/Widgets'), for: 'App\\Filament\\Auth\\Widgets')
       ->widgets([
