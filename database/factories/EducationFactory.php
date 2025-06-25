@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Education>
@@ -37,8 +38,11 @@ class EducationFactory extends Factory
         $startDate = fake()->dateTimeBetween('-15 years', '-5 years');
         $endDate = fake()->dateTimeBetween($startDate, 'now');
 
+        $institution = fake()->randomElement($institutions);
+
         return [
-            'institution' => fake()->randomElement($institutions),
+            'institution' => $institution,
+            'slug' => Str::slug($institution),
             'url' => fake()->url(),
             'major' => fake()->randomElement($majors),
             'start_date' => $startDate,

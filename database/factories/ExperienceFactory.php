@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Experience>
@@ -16,8 +17,10 @@ class ExperienceFactory extends Factory
      */
     public function definition(): array
     {
+        $company = fake()->company();
         return [
-            'company' => fake()->company(),
+            'company' => $company,
+            'slug' => Str::slug($company),
             'address' => fake()->address(),
             'url' => fake()->url(),
             'role' => fake()->jobTitle(),
