@@ -45,32 +45,33 @@ class AuthPanelProvider extends PanelProvider
       ->plugins([
         FilamentSpatieRolesPermissionsPlugin::make(),
         SimpleLightBoxPlugin::make(),
-        FilamentSocialitePlugin::make()
-          // (required) Add providers corresponding with providers in `config/services.php`.
-          ->providers([
-            Provider::make('google')
-              ->label('Google')
-              ->icon('fab-google')
-              ->color(Color::hex('#4285F4'))
-              ->outlined(false)
-              ->stateless(false)
-              ->scopes(['openid', 'profile', 'email'])
-              ->with([]),
-          ])
-          ->registration(true)
-          ->domainAllowList([])
-          ->createUserUsing(function (string $provider, SocialiteUserContract $oauthUser, FilamentSocialitePlugin $plugin) {
-            $user = User::create([
-              'name' => $oauthUser->getName() ?? $oauthUser->getNickname() ?? 'User',
-              'email' => $oauthUser->getEmail(),
-              'email_verified_at' => now(),
-              'password' => null,
-            ]);
-            $user->assignRole('member');
-            return $user;
-          })
-          ->userModelClass(\App\Models\User::class)
-          ->socialiteUserModelClass(\App\Models\SocialiteUser::class)
+        // FilamentSocialitePlugin::make()
+        //   // (required) Add providers corresponding with providers in `config/services.php`.
+        //   ->providers([
+        //     Provider::make('google')
+        //       ->label('Google')
+        //       ->icon('fab-google')
+        //       ->color(Color::hex('#4285F4'))
+        //       ->outlined(false)
+        //       ->stateless(false)
+        //       ->scopes(['openid', 'profile', 'email'])
+        //       ->with([]),
+        //   ])
+        //   ->slug('auth')
+        //   ->registration(true)
+        //   ->domainAllowList([])
+        //   ->createUserUsing(function (string $provider, SocialiteUserContract $oauthUser, FilamentSocialitePlugin $plugin) {
+        //     $user = User::create([
+        //       'name' => $oauthUser->getName() ?? $oauthUser->getNickname() ?? 'User',
+        //       'email' => $oauthUser->getEmail(),
+        //       'email_verified_at' => now(),
+        //       'password' => null,
+        //     ]);
+        //     $user->assignRole('member');
+        //     return $user;
+        //   })
+        //   ->userModelClass(\App\Models\User::class)
+        //   ->socialiteUserModelClass(\App\Models\SocialiteUser::class)
       ])
       ->discoverWidgets(in: app_path('Filament/Auth/Widgets'), for: 'App\\Filament\\Auth\\Widgets')
       ->widgets([
