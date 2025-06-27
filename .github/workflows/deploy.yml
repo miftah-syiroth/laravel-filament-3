@@ -1,0 +1,48 @@
+name: 🚀 Deploy Laravel
+
+on:
+  push:
+    branches:
+      - stage
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout kode
+        uses: actions/checkout@v3
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.STAGE_SSH_KEY }}" > ~/.ssh/id_ed25519_stage
+          echo "${{ secrets.PROD_SSH_KEY }}" > ~/.ssh/id_ed25519_prod
+          chmod 600 ~/.ssh/id_ed25519_*
+
+      - name: Deploy ke server
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/stage" ]; then
+            ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519_stage syiroth-stage@54.254.180.206 "
+              cd /home/syiroth-stage/htdocs/stage.syiroth.com &&
+              git pull origin stage &&
+              composer install --no-dev &&
+              php artisan migrate --force &&
+              npm i &&
+              npm run build &&
+              php artisan config:cache &&
+              php artisan route:cache
+            "
+          elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519_prod syiroth@54.254.180.206 "
+              cd /home/syiroth/htdocs/syiroth.com &&
+              git pull origin main &&
+              composer install --no-dev &&
+              php artisan migrate --force &&
+              npm i &&
+              npm run build &&
+              php artisan config:cache &&
+              php artisan route:cache
+            "
+          fi
