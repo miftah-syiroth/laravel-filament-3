@@ -24,7 +24,7 @@ jobs:
       - name: Deploy ke server
         run: |
           if [ "${{ github.ref }}" == "refs/heads/stage" ]; then
-            ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519_stage syiroth-stage@54.254.180.206 "
+            ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519_stage syiroth-stage@stage.syiroth.com "
               cd /home/syiroth-stage/htdocs/stage.syiroth.com &&
               git pull origin stage &&
               composer install --no-dev &&
@@ -35,7 +35,7 @@ jobs:
               php artisan route:cache
             "
           elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519_prod syiroth@54.254.180.206 "
+            ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519_prod syiroth@syiroth.com "
               cd /home/syiroth/htdocs/syiroth.com &&
               git pull origin main &&
               composer install --no-dev &&
