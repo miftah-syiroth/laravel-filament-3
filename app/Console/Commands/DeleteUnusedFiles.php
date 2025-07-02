@@ -2,7 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Settings\WebsiteSettings;
+use App\Settings\AboutSetting;
+use App\Settings\WebsiteSetting;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 
@@ -27,15 +28,19 @@ class DeleteUnusedFiles extends Command
      */
     public function handle()
     {
-        $logo = app(WebsiteSettings::class)->logo;
-        $favicon = app(WebsiteSettings::class)->favicon;
+        $websiteSettings = app(WebsiteSetting::class);
+        $aboutSettings = app(AboutSetting::class);
 
-        $usedFiles = collect([$logo, $favicon])
-            ->filter() // hapus null dan ''
-            ->map(fn($file) => basename($file))
-            ->toArray();
+        $usedFiles = collect([
+            $websiteSettings->logo,
+            $websiteSettings->favicon,
+            $aboutSettings->avatar,
+        ])
+        ->filter()
+        ->map(fn($file) => basename($file))
+        ->toArray();
 
-        collect(Storage::disk('public')->allFiles(WebsiteSettings::PATH))
+        collect(Storage::disk('public')->allFiles(WebsiteSetting::PATH))
             ->reject(fn(string $file) => basename($file) === '.gitignore')
             ->reject(fn(string $file) => in_array(basename($file), $usedFiles))
             ->each(function ($file) {
