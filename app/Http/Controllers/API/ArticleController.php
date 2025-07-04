@@ -18,7 +18,9 @@ class ArticleController extends Controller
             })
             ->get();
 
-        return response()->json($articles);
+        return response()->json([
+            'data' => $articles,
+        ]);
     }
 
     public function summary(Request $request)
