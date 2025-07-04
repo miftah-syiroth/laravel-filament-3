@@ -33,6 +33,7 @@ class ArticleController extends Controller
     }
 
     public function show($slug = null) : JsonResponse {
+        // batasi informasinya hanya title, slug, excerpt, content, published_at, url, category
         if ($slug) {
             $article = Article::where('slug', $slug)
                 ->where('is_published', true)
@@ -47,7 +48,13 @@ class ArticleController extends Controller
         }
 
         return response()->json([
-            'data' => $article,
+            'data' => [
+                'title' => $article->title,
+                'slug' => $article->slug,
+                'excerpt' => $article->excerpt,
+                'content' => $article->content,
+                'published_at' => $article->published_at,
+            ],
         ]);
     }
 }
