@@ -44,15 +44,8 @@ class Article extends Model implements HasMedia
         return $this->belongsTo(Category::class);
     }
 
-    public function getDynamicSEOData(): SEOData
+    public function getUrlAttribute(): string
     {
-        // $pathToFeaturedImageRelativeToPublicPath = // ..;
-
-        // Override only the properties you want:
-        return new SEOData(
-            title: $this->title,
-            description: $this->title,
-            image: $this->getFirstMediaUrl('article-images'),
-        );
+        return "https://syiroth.com/articles/{$this->slug}";
     }
 }

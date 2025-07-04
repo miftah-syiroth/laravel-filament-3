@@ -20,11 +20,11 @@ class DatabaseSeeder extends Seeder
   {
     // Call ArticleSeeder
     $this->call([
-      ProjectSeeder::class,
+    //   ProjectSeeder::class,
       ArticleSeeder::class,
       UserSeeder::class,
-      EducationSeeder::class,
-      ExperienceSeeder::class,
+    //   EducationSeeder::class,
+    //   ExperienceSeeder::class,
     ]);
   }
 }

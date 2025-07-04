@@ -7,5 +7,4 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
-Route::get('/articles/search', [App\Http\Controllers\API\ArticleController::class, 'search']);
-Route::get('/articles/summary', [App\Http\Controllers\API\ArticleController::class, 'summary']);
+Route::get('/articles', [App\Http\Controllers\API\ArticleController::class, 'index']);

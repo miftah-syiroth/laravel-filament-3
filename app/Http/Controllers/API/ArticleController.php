@@ -4,31 +4,30 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Article;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
 
 class ArticleController extends Controller
 {
-    public function search(Request $request)
+    public function index()
     {
-        $keyword = $request->input('keyword');
-        $articles = Article::where('title', 'like', "%$keyword%")
-            ->orWhereHas('category', function (Builder $query) use ($keyword) {
-                $query->where('name', 'like', "%$keyword%");
-            })
-            ->get();
+        // ambil semua artikel yang is_published = true
+        $articles = Article::where('is_published', true)
+            ->with('category')
+            ->get()
+            ->map(function ($article) {
+                return [
+                    'id' => $article->id,
+                    'title' => $article->title,
+                    'slug' => $article->slug,
+                    'excerpt' => $article->excerpt,
+                    'content' => $article->content,
+                    'published_at' => $article->published_at,
+                    'url' => $article->url,
+                    'category' => $article->category?->name,
+                ];
+            });
 
         return response()->json([
             'data' => $articles,
         ]);
-    }
-
-    public function summary(Request $request)
-    {
-        $title = $request->input('title');
-
-        $article = Article::where('title', 'like', "%$title%")->firstOrFail();
-
-        return response()->json(['title' => $article->title, 'konten' => $article->konten]);
     }
 }
