@@ -8,3 +8,4 @@ use Illuminate\Support\Facades\Route;
 // })->middleware('auth:sanctum');
 
 Route::get('/articles', [App\Http\Controllers\API\ArticleController::class, 'index']);
+Route::get('/articles/show/{slug?}', [App\Http\Controllers\API\ArticleController::class, 'show']);
